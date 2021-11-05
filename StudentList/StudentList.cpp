@@ -4,6 +4,7 @@ Date Last Modified: 11/5/21
 This program is titled Student List. It allows the user to do one of 4 things: add students to the list, delete students from the list, print the list, and quit the program. To add students, the user types "ADD". When this happens, the user can add a student to the list by adding their first and last name, id, and gpa. To delete students, the user types "DELETE". When this happens, the user can delete a specific student from their list by entering that student's ID number, then the program searches for that particular ID number in the list and deletes that student. When the user types "PRINT", the program prints the student names, id numbers, and gpas in the particular order that they were added. When the user types "QUIT", they quit the program.
  */
 #include <iostream>
+#include <cstring>
 #include <vector>
 #include <cstring>
 
@@ -16,6 +17,7 @@ struct student {
   float gpa;
 };
 
+<<<<<<< HEAD
 
 void add(vector <student*> &v);
 void remove(vector <student*> &v);
@@ -24,6 +26,15 @@ void print(vector <student*> &v);
 int main() {
   vector <student*> list;
   char input[10];
+=======
+void add(vector <student*> &v);
+void remove(vector <student*> &v);
+void printList(vector <student*> &v);
+
+int main() {
+  vector <student*> list;
+  char input [10];
+>>>>>>> f817feba904852d7f2062e5a1a7c3ba860e0f7e3
   while (true) {
     cout << "Please enter a command: ";
     cin >> input;
@@ -40,7 +51,11 @@ int main() {
     }
 
     else if (strcmp(input, "PRINT") == 0){
+<<<<<<< HEAD
       print(list);
+=======
+      printList(list);
+>>>>>>> f817feba904852d7f2062e5a1a7c3ba860e0f7e3
     }
 
     else if (strcmp(input, "QUIT") == 0){
@@ -48,13 +63,20 @@ int main() {
     }
 
     else {
+<<<<<<< HEAD
       cout << "Not a valid command! Please type 'ADD' to add a new student to the list, 'DELETE' to remove a student from the list, 'PRINT' to print all the students in the list, or 'QUIT' to exit the program" << endl;
+=======
+      cout << "Not a valid command!" << endl;
+>>>>>>> f817feba904852d7f2062e5a1a7c3ba860e0f7e3
     }
   }
+
+  cout << "Thank you for using this very complicated program! Goodbye!";
   return 0;
 }
 
 void add(vector <student*> &v){
+<<<<<<< HEAD
   student* newStudent = new student();
   cout << "Enter the student's first name: ";
   cin >> newStudent -> firstName;
@@ -86,3 +108,37 @@ void print(vector <student*> &v){
   for (vector <student*> :: iterator it = v.begin(); it != v.end(); ++it){
     cout << "First Name: " << (*it) -> firstName << " | Last Name: " << (*it) -> lastName << " | ID: " << (*it) -> id << " | GPA: " << (*it) -> gpa << endl;
   }
+=======
+  student* newStudent;
+  cout << "Enter the student's first name: ";
+  cin >> newStudent->firstName;
+  cout << endl << "Enter the student's last name: ";
+  cin >> newStudent->lastName;
+  cout << endl << "Enter the student's ID number: ";
+  cin >> newStudent->id;
+  cout << endl << "Enter the student's GPA: ";
+  cin >> newStudent->gpa;
+  cout << endl;
+  v.push_back(newStudent); //I found this using https://www.cplusplus.com/reference/vector/vector/push_back/
+  
+}
+
+void remove(vector <student*> &v){
+  int input = -32;
+  cout << "Please enter the ID number of the student you wish to delete from the list: ";
+  cin >> input;
+  //if (student
+}
+
+void print(vector <student*> &v){
+  cout << student->name;
+}
+    
+  /*void clearInput((&input)char[10]){
+  for (int i = 0; i < 10; i++){
+    if (input[i] != '\0'){
+      input[i] = 0;
+    }
+  }
+  }*/
+>>>>>>> f817feba904852d7f2062e5a1a7c3ba860e0f7e3
