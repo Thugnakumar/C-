@@ -8,6 +8,7 @@ This program is titled Student List. It allows the user to do one of 4 things: a
 #include <vector>
 #include <cstring>
 #include <math.h>
+#include <iomanip>
 
 using namespace std;
 
@@ -29,8 +30,9 @@ int main() {
   vector <student*> list;//creates a new list of student pointers
   char input[10];//reads in the user's input to determine what command they give
   while (true) {//keeps running forever
-    cout << "Please enter a command: "; //prompts the user for a command
+    cout << endl << "Please type 'ADD' to add a new student to the list, 'DELETE' to remove a student from the list, 'PRINT' to print all the students in the list, or 'QUIT' to exit the program: "; //prompts the user for a command
     cin >> input;//reads in the command
+    cout << endl;
     for (int i = 0; i < strlen(input); i++){
       //changes the user's input to purely uppercase characters
       input[i] = toupper(input[i]);
@@ -63,7 +65,7 @@ int main() {
 
     else {
       //if none of the above inputs are the same as what the user typed in, then it's an invalid command and the following message prints on the screen
-      cout << "Not a valid command! Please type 'ADD' to add a new student to the list, 'DELETE' to remove a student from the list, 'PRINT' to print all the students in the list, or 'QUIT' to exit the program" << endl;
+      cout << "Not a valid command!" << endl;
     }
   }
 
@@ -92,15 +94,15 @@ void remove(vector <student*> &v){
   int studentID = -1;
   if (!v.empty()){
     //the program first checks to see if there is an actual student in the list first, before it deletes anything
-    cout << "Please type the ID of the student you wish to delete. Here are the current students in your list:" << endl; //prompts the user to type the ID of the student they wish to delete
     print(v); //prints out the list of current students so that the user can reference what students they have and their properties before deleting
+    cout << "Above is your list of current students in your list. Please type the ID of the student you wish to delete:" << endl; //prompts the user to type the ID of the student they wish to delete
     cin >> studentID; //reads in the user's input for ID
     for (vector <student*> :: iterator it = v.begin(); it != v.end(); ++it){
       //iterates through each element in the vector
       if (studentID == (*it) -> id){
 	//compares the user input ID and the ID of each student until they match, then removes that student from the vector and deletes it completely
+     	delete *it;
 	v.erase(it);
-	delete *it;
 	cout << "Deleted!" << endl;
 	break;
       }
@@ -124,7 +126,7 @@ void print(vector <student*> &v){
     //makes sure that the vector isn't empty first
     for (vector <student*> :: iterator it = v.begin(); it != v.end(); ++it){
       //iterates through each element in the vector and prints each of the students' properties
-      cout << "First Name: " << (*it) -> firstName << " | Last Name: " << (*it) -> lastName << " | ID: " << (*it) -> id << " | GPA: " << (*it) -> gpa << endl;
+      cout << "First Name: " << (*it) -> firstName << " | Last Name: " << (*it) -> lastName << " | ID: " << (*it) -> id << " | GPA: " << std:: setprecision(2) << std::fixed << (*it) -> gpa << endl;
     }
   }
 
