@@ -1,13 +1,13 @@
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
 class Media{
  public:
   Media();
-  char[] title();
-  int year();
   ~Media();
+protected:
   char title[80];
   int year;
 };

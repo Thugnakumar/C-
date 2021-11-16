@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include "media.h"
 
 
@@ -10,5 +11,3 @@ Media::Media(){
   cout << endl << "What year was it published? ";
   cin >> year;
 }
-
-media::char[] title(
