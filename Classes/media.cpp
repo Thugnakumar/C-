@@ -12,3 +12,7 @@ Media::Media(){
   cout << endl << "What year was it published? ";
   cin >> year;
 }
+
+Media::~Media(){
+  delete[] title;
+}
