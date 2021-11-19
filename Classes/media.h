@@ -12,4 +12,5 @@ class Media{
 protected:
   char title[80];
   int year;
+  char* firstIndex;
 };

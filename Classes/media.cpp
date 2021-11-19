@@ -11,7 +11,6 @@ Media::Media(){
 }
 
 char* Media::getTitle(){
-  char* firstIndex;
   cout << "What is the title? ";
   cin >> title;
   cin.ignore(80,'\n');
