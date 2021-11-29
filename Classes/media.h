@@ -1,3 +1,5 @@
+#ifndef MEDIA_H
+#define MEDIA_H
 #include <iostream>
 #include <cstring>
 
@@ -14,3 +16,5 @@ protected:
   int year;
   char* firstIndex;
 };
+
+#endif

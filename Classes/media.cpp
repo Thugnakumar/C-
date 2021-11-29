@@ -12,8 +12,7 @@ Media::Media(){
 
 char* Media::getTitle(){
   cout << "What is the title? ";
-  cin >> title;
-  cin.ignore(80,'\n');
+  cin.getline(title, 80);
   firstIndex = title;
   return firstIndex;
 }
@@ -21,6 +20,7 @@ char* Media::getTitle(){
 int Media::getYear(){
   cout << endl << "What year was it published? ";
   cin >> year;
+  cout << endl;
   return year;
 }
 

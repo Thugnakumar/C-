@@ -1,3 +1,5 @@
+#ifndef MUSIC_H
+#define MUSIC_H
 #include <iostream>
 #include <cstring>
 #include "media.h"
@@ -18,3 +20,5 @@ private:
   char* nameIndex;
   char* publisherIndex;
 };
+
+#endif
