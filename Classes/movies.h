@@ -19,3 +19,6 @@ class Movies: public Media {
   float rating[2];
   char* directorName;
   float* ratings;
+};
+
+#endif

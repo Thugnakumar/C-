@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstring>
-#include "media.h"
+#include "vg.h"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ float* VG::getRating(){
   cout << "Enter the rating for the video game: ";
   cin >> vgRatings[1];
   cout << endl << "What is the rating out of (e.g. 3 out of 5): ";
-  cing >> vgRatings[2];
+  cin >> vgRatings[2];
   cout << endl;
   vgRating = vgRatings;
   return vgRating;

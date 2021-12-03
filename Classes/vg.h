@@ -17,3 +17,6 @@ class VG: public Media {
   float vgRatings[2];
   char* titleName;
   float* vgRating;
+};
+
+#endif
