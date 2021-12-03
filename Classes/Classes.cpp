@@ -24,7 +24,8 @@ int main(){
       while (true){
 	
 	cout << "What type of media would you like to add? Type 'MUSIC' to add music, 'MOVIE' to add movies, 'VG' to add video games, or 'QUIT' to go back. ";
-	cin.getline(command2, 5);
+	cin.getline(command2, 6);
+	//cin.ignore();
 	
 	for (int i = 0; i < strlen(command2); i++){
 	  command2[i] = toupper(command2[i]);
@@ -50,13 +51,16 @@ int main(){
 
 	else if (strcmp(command2, "QUIT") == 0) {
 	  for (int i = 0; i < strlen(command); i++){
-	    command[i] = '\0';
+	    command2[i] = '\0';
 	  }
 	  break;
 	}
 
 	else {
 	  cout << "Not a valid command!" << endl;
+	  for (int i = 0; i < strlen(command); i++){
+	    command2[i] = '\0';
+	  }
 	}
       }
     }
@@ -70,22 +74,26 @@ int main(){
 	}
 
 	if (strcmp(command2, "TITLE") == 0){
-	  int increment;
+	  int increment = 0;
 	  cout << "Please type the title of the media you want to find: ";
 	  cin.getline(command2, 80);
 	  cout << endl;
 	  for (vector <Media*> :: iterator it = vect.begin(); it != vect.end(); ++it) {
-	    if (strcmp(command2, (*it) -> title) == 0{
-		;
+	    if (strcmp(command2, (*it) -> getTitle()) == 0){
+	      (*it) -> print();
 		++increment;
 	      }
+	  }
+
+	  if (increment == 0) {
+	    cout << "No item in the list matches your search!";
 	  }
 	}
 
 	else if (strcmp(command2, "YEAR") == 0){
 	  int year;
 	  cout << "Please type the year of the media you want to find: ";
-	  cin << year;
+	  cin >> year;
 	  
 	}
 

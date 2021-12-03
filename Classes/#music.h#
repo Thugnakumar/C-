@@ -13,7 +13,7 @@ public:
   char* getArtist();
   float time();
   char* getPublisher();
-  void print();
+  virtual void print();
 private:
   char name[80];
   int duration;

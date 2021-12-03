@@ -10,11 +10,11 @@ VG::VG(){
 }
 
 char* VG::getTitle(){
-  cout << "Enter the title of your video game: ";
-  cin.getline(title, 80);
+  cout << "Enter the publisher of your video game: ";
+  cin.getline(publisher, 80);
   cout << endl;
-  titleName = title;
-  return titleName;
+  publisherName = publisher;
+  return publisherName;
 }
 
 float* VG::getRating(){
@@ -25,6 +25,11 @@ float* VG::getRating(){
   cout << endl;
   vgRating = vgRatings;
   return vgRating;
+}
+
+void VG::print(){
+  Media::print();
+  cout << "Publisher: " << publisher << " ; " << "Rating: " << vgRatings[1] << "/" << vgRatings[2] << endl;
 }
 
 VG::~VG(){

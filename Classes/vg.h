@@ -12,10 +12,11 @@ class VG: public Media {
   ~VG();
   char* getTitle();
   float* getRating();
+  virtual void print();
  private:
-  char title[80];
+  char publisher[80];
   float vgRatings[2];
-  char* titleName;
+  char* publisherName;
   float* vgRating;
 };
 

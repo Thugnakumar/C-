@@ -35,6 +35,11 @@ float* Movies::getRating(){
   return ratings;
 }
 
+void Movies::print(){
+  Media::print();
+  cout << "Director: " << director << " ; " << "Duration: " << time << " ; " << "Rating: " << rating[1] << "/" << rating[2] << endl;
+}
+
 Movies::~Movies(){
   delete[] director;
   delete[] rating;

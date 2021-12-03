@@ -13,6 +13,7 @@ class Movies: public Media {
   char* getDirector();
   float getDuration();
   float* getRating();
+  virtual void print();
  private:
   char director[80];
   float time;

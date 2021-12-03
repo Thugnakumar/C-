@@ -34,6 +34,12 @@ char* Music::getPublisher(){
   return publisherIndex;
 }
 
+void Music::print(){
+  //cout << "Title: " << title << " ; " << "Year: " << year << " ; ";
+  Media::print();
+  cout << "Artist: " << name << " ; " << "Time: " << duration << "Publisher: " << publisher << endl;
+}
+
 Music::~Music(){
   delete[] name;
   delete[] publisher;

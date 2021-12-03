@@ -24,6 +24,10 @@ int Media::getYear(){
   return year;
 }
 
+void Media::print(){
+  cout << "Title: " << title << " ; " << "Year: " << year << " ; ";
+}
+
 Media::~Media(){
   delete[] title;
 }
