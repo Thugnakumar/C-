@@ -9,11 +9,11 @@ using namespace std;
 class Movies: public Media {
  public:
   Movies();
-  ~Movies();
   char* getDirector();
   float getDuration();
   float* getRating();
   virtual void print();
+  virtual ~Movies();
  private:
   char director[80];
   float time;

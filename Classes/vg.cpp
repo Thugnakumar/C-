@@ -31,7 +31,7 @@ float* VG::getRating(){
 void VG::print(){
   cout << "Type of media: Video Game ; ";
   Media::print();
-  cout << "Publisher: " << publisher << " ; " << "Rating: " << vgRatings[1] << "/" << vgRatings[2] << endl;
+  cout << "Publisher: " << publisher << " ; " << "Rating: " << vgRatings[0] << "/" << vgRatings[1] << endl << "--------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
 }
 
 VG::~VG(){

@@ -9,10 +9,10 @@ using namespace std;
 class VG: public Media {
  public:
   VG();
-  ~VG();
   char* getTitle();
   float* getRating();
   virtual void print();
+  virtual ~VG();
  private:
   char publisher[80];
   float vgRatings[2];

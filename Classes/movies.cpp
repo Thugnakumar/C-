@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <math.h>
 #include "movies.h"
 
 using namespace std;
@@ -12,8 +13,7 @@ Movies::Movies(){
 
 char* Movies::getDirector(){
   cout << "Please enter the name of the movie director: ";
-  cin.getline(director, 80);
-  cin.ignore(80, '\n');
+  cin.getline(director, 80, '\n');
   cout << endl;
   directorName = director;
   return directorName;
@@ -22,6 +22,8 @@ char* Movies::getDirector(){
 float Movies::getDuration(){
   cout << "Please enter the duration of the movie in minutes (to the nearest tenth of a minute): ";
   cin >> time;
+  cin.ignore(80, '\n');
+  time = round(time * 10)/10;
   cout << endl;
   return time;
 }
@@ -40,7 +42,7 @@ float* Movies::getRating(){
 void Movies::print(){
   cout << "Type of media: Movie ; ";
   Media::print();
-  cout << "Director: " << director << " ; " << "Duration: " << time << " ; " << "Rating: " << rating[1] << "/" << rating[2] << endl;
+  cout << "Director: " << director << " ; " << "Duration: " << time << " ; " << "Rating: " << rating[0] << "/" << rating[1] << endl << "----------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
 }
 
 Movies::~Movies(){

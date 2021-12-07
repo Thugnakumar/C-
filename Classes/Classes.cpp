@@ -93,8 +93,9 @@ int main(){
 	  int year;
 	  cout << "Please type the year of the media you want to find: ";
 	  cin >> year;
+	  cin.ignore(4, '\n');
 	  for (vector <Media*> :: iterator it = vect.begin(); it != vect.end(); ++it) {
-	    if (year == (*it) -> getYear()){
+	    if (year == (*it) -> returnYear()){
 	      (*it) -> print();
 		++increment;
 	      }
