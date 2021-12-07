@@ -12,7 +12,8 @@ Music::Music(){
 
 char* Music::getArtist(){
   cout << "Please enter the name of the artist: ";
-  cin.getline(name, 80);  
+  cin.getline(name, 80);
+  cin.ignore(80, '\n');
   cout << endl;
   nameIndex = name;
   return nameIndex;
@@ -35,7 +36,7 @@ char* Music::getPublisher(){
 }
 
 void Music::print(){
-  //cout << "Title: " << title << " ; " << "Year: " << year << " ; ";
+  cout << "Type of media: Music ; ";
   Media::print();
   cout << "Artist: " << name << " ; " << "Time: " << duration << "Publisher: " << publisher << endl;
 }

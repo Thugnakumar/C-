@@ -13,6 +13,7 @@ Movies::Movies(){
 char* Movies::getDirector(){
   cout << "Please enter the name of the movie director: ";
   cin.getline(director, 80);
+  cin.ignore(80, '\n');
   cout << endl;
   directorName = director;
   return directorName;
@@ -27,15 +28,17 @@ float Movies::getDuration(){
 
 float* Movies::getRating(){
   cout << "Enter the rating for the movie: ";
-  cin >> rating[1];
+  cin >> rating[0];
   cout << endl << "What is the rating out of? (e.g. 3 out of 5): ";
-  cin >> rating[2];
+  cin >> rating[1];
+  cin.ignore(10, '\n');
   cout << endl;
   ratings = rating;
   return ratings;
 }
 
 void Movies::print(){
+  cout << "Type of media: Movie ; ";
   Media::print();
   cout << "Director: " << director << " ; " << "Duration: " << time << " ; " << "Rating: " << rating[1] << "/" << rating[2] << endl;
 }

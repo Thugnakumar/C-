@@ -17,11 +17,21 @@ char* Media::getTitle(){
   return firstIndex;
 }
 
+char* Media::returnTitle(){
+  char* titlePtr = firstIndex;
+  return titlePtr;
+}
+
 int Media::getYear(){
   cout << endl << "What year was it published? ";
   cin >> year;
   cout << endl;
   return year;
+}
+
+int Media::returnYear(){
+  int yearNum = year;
+  return yearNum;
 }
 
 void Media::print(){
