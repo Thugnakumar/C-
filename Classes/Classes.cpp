@@ -174,9 +174,9 @@ void remove(vector <Media*> &vect){
   //basically the same thing as the search function, except that this time the user is given a confirmation message asking whether or not they want to delete that particular item. If they do, then they can type in the affirmation message and that item will be deleted
   char command2[80];
   char agree = 'a';
-
+  int increment = 0;
+  
   if (!vect.empty()){
-    int increment = 0;
     cout << "Would you like to search by title or by year? ";
     cin.getline(command2, 6, '\n');
     for (int i = 0; i < strlen(command2); i++){
@@ -199,18 +199,25 @@ void remove(vector <Media*> &vect){
       }
 
       else {
+	//prints out a confirmation message to make sure the user is okay with the following items being deleted. All items matching the user's search are deleted
 	cout << "The above items will be deleted. Is this okay? [Y/N]";
 	cin >> agree;
 	cin.ignore(1, '\n');
 	if (agree == 'Y' || agree == 'y'){
-	  for (vector <Media*> :: iterator it = vect.begin(); it != vect.end(); ++it) {
-	    if (strcmp(command2, (*it) -> returnTitle()) == 0){
-	      (*it) -> ~Media();
+	  //if the user agrees, goes through the vector the same number of times as there are items in the list that match the user's search and deletes them all
+	  for (int i = 0; i < increment; i++){
+	    for (vector <Media*> :: iterator it = vect.begin(); it != vect.end(); ++it) {
+	      if (strcmp(command2, (*it) -> returnTitle()) == 0){
+		(*it) -> ~Media();
+		vect.erase(it);
+		break;
+	      }
 	    }
 	  }
 	}
 
 	else if (!(agree == 'Y') || !(agree == 'y') || !(agree == 'N') || !(agree == 'n')){
+	  //if the user types something else then that's not a valid command
 	  cout << "Not a valid input!" << endl;
 	}
       }
@@ -234,13 +241,19 @@ void remove(vector <Media*> &vect){
 
       
       else {
+	//prints out a confirmation message to make sure the user is okay with the following items being deleted. All items matching the user's search are deleted
 	cout << "The above items will be deleted. Is this okay? [Y/N]";
 	cin >> agree;
 	cin.ignore(1, '\n');
 	if (agree == 'Y' || agree == 'y'){
-	  for (vector <Media*> :: iterator it = vect.begin(); it != vect.end(); ++it) {
-	    if (year == (*it) -> returnYear()){
-	      (*it) -> ~Media();
+	  //if the user agrees, goes through the vector the same number of times as there are items in the list that match the user's search and deletes them all
+	  for (int i = 0; i< increment; i++){
+	    for (vector <Media*> :: iterator it = vect.begin(); it != vect.end(); ++it) {
+	      if (year == (*it) -> returnYear()){
+		(*it) -> ~Media();
+		vect.erase(it);
+		break;
+	      }
 	    }
 	  }
 	}
