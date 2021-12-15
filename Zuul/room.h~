@@ -1,0 +1,22 @@
+//header guards
+#ifndef ROOM_H
+#define ROOM_H
+//libraries
+#include <iostream>
+#include <cstring>
+#include <map>
+
+using namespace std;
+
+class Room {
+ public:
+  Room();
+  char* returnDescription(char arr[]);
+  
+  ~Room();
+ private:
+  map<cstring, Room*>
+  char description[80];
+  char* descriptionPtr;
+  
+};
