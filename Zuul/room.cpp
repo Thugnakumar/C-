@@ -12,11 +12,15 @@ Room::Room(){
 }
 
 void Room::setDescription(char description[80]){
-  strcpy(description, roomDescription);
+  strcpy(roomDescription, description);
 }
 
 void Room::returnDescription(){
   cout << roomDescription << endl;
+}
+
+void Room::setExits(char exit[4], Room* adjacentRoom){
+  roomLayout.insert(pair<exit, adjacentRoom));
 }
 
 void Room::getExits(){
@@ -36,4 +40,8 @@ void Room::getExits(){
   if (exits[3] == true){
     cout << "There is a West exit. ";
     }*/
+}
+
+Room::~Room() {
+  
 }

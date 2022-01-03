@@ -20,7 +20,7 @@ int main(){
 
 void initializeRooms(vector <Room*> &layout){
   char description[80];
-  strcpy("Welcome to Scotland!", description);
+  strcpy(description, "Welcome to Scotland!");
   Room* place = new Room();
   place -> setDescription(description);
   layout.push_back(place);
