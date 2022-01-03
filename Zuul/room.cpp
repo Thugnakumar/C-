@@ -6,16 +6,34 @@
 using namespace std;
 
 Room::Room(){
-  cout << "Please enter a description for the room: ";
-  cin >> description;
-  cout << endl;
+  for (int i = 0; i < 4; ++i){
+    exits[i] = false;
+  }
 }
 
-char* Room::returnDescription(){
-  descriptionPtr = description;
-  return descriptionPtr;
+void Room::setDescription(char description[80]){
+  strcpy(description, roomDescription);
 }
 
-bool* setExits(){
-  
+void Room::returnDescription(){
+  cout << roomDescription << endl;
+}
+
+void Room::getExits(){
+  /*exitPtr = exits;
+  if (exits[0] == true){
+    cout << "There is a North exit. ";
+  }
+
+  if (exits[1] == true){
+    cout << "There is a South exit. ";
+  }
+
+  if (exits[2] == true){
+    cout << "There is an East exit. ";
+  }
+
+  if (exits[3] == true){
+    cout << "There is a West exit. ";
+    }*/
 }

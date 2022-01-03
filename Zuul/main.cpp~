@@ -1,0 +1,8 @@
+//all the libraries
+#include <iostream>
+#include <cstring>
+#include <vector>
+#include <map>
+#include "room.h"
+
+using std::namespace;
