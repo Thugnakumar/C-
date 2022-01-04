@@ -28,6 +28,10 @@ void Room::getExits(){
   }
 }
 
+map<char*, Room*> Room::returnMap(){
+  return roomLayout;
+}
+
 Room::~Room() {
   
 }

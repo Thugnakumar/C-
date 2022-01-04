@@ -15,12 +15,13 @@ class Room {
   void returnDescription();//returns the description of the room
   void setExits(char exit[10], Room* adjacentRoom);
   void getExits();//gets/returns the exits of the current room
+  map<char*, Room*> returnMap(); //returns the map
   ~Room();//destructor
  private: //all private variables
-  char roomDescription[80];
-  map <char*, Room*> roomLayout;
-  char exit2 [10];
-  char* exitPtr;
+  char roomDescription[80]; //character array holding room description
+  map <char*, Room*> roomLayout;//map showing where each exit is
+  char exit2 [10]; //for N, S, E, W commands
+  char* exitPtr; //the char pointer in the map
 };
 
 #endif
