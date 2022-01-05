@@ -90,7 +90,26 @@ int main(){//where all the action happens
 void initializeRooms(vector <Room*> &layout){//sets the position, exits, items, and descriptions of all rooms
 
   char description[150];//used to create room descriptions
+  char itemDescription[20];
+  
+  strcpy("Matches", itemDescription);
+  item* matches = new item();
+  
+  strcpy("Crowbar", itemDescription);
+  item* crowbar = new item();
 
+  strcpy("Moldy banana", itemDescription);
+  item* moldy_banana = new item();
+
+  strcpy("Pencil", itemDescription);
+  item* pencil = new item();
+
+  strcpy("Bottle of alcohol", itemDescription);
+  item* alcohol = new item();
+
+  strcpy("Frappuccino", itemDescription);
+  item* frappe = new item();
+  
   //outside room creation code
   strcpy(description, "You're outside. There is a nice, cool breeze. ");
   Room* outside = new Room();

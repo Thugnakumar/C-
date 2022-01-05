@@ -58,6 +58,14 @@ map<int, Room*> Room::returnMap(){
   return roomLayout;
 }
 
+void setItems(item* item){
+  vect.push_back(item);
+}
+
+void getItems(Room* currentRoom, item* item){
+  
+}
+
 Room::~Room() {
   //destructor class
 }
