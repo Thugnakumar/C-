@@ -10,32 +10,39 @@ This is the zuul project. The theme of this zuul game is "The John Wick of Colle
 #include <vector>
 #include <map>
 #include "room.h"
-
-struct item {
-  //basic blueprint for an item
-  char description[20];
-};
+#include "item.h"
 
 using namespace std;
 
 //function declarations
-void initializeRooms(vector <Room*> &layout);
+void initializeRooms(vector <Room*> &layout, vector <item*> &inventory);
 void movement(Room* &currentRoom, int direction);
 
 int main(){//where all the action happens
   
   vector <Room*> layout;//vector storing all of the rooms
   vector <item*> inventory; //vector storing all of the items
-  initializeRooms(layout);
+  initializeRooms(layout, inventory);
   char instructions[500]; //character array containing game instructions/goal
-  char input[20]; //for taking in user input
+  char input[50]; //for taking in user input
+  bool detonated = false; //checks if the user has set fire to the school yet
   strcpy(instructions, "You are a senior in high school and an arsonist. The college application process has nearly killed you and you want to get revenge by burning every college you see to the ground. You decide to send a message by starting with your local university: Stanford. You've brought matches but nothing to burn. Find the bottle of alcohol, set it on fire, and drop it on the generator to blow up the university!");
   cout << instructions << endl;
   Room* currentRoom = layout[0]; //sets the initial room to "outside" at the start of the game
   while (true){ //runs forever
+    if (detonated == true){//if you've set off the bomb, the instructions change and if you're outside, then the loop breaks and you've won the game!
+      strcpy(instructions, "You blew up the generator! Now go outside to safety!");
+      if (currentRoom == layout[0]){
+	cout << "You made it and won the game! Now, what college to blow up next...?" << endl;
+	break;
+      }
+    }
+    
     currentRoom -> returnDescription(); //gets the description of the current room you're in
     cout << "There are exits:" << endl;
     currentRoom -> getExits(); //prints out all of the exits in the room the user is currently in
+    cout << "There are items:" << endl;
+    currentRoom -> getItems(); //prints all items in the room
     cout << endl << "Type in the name of an exit to move. Type in the name of an object to pick it up. Type 'INVENTORY' to see what items you currently have. Type in 'DROP' to drop an item and then type in its name to drop it. Type in 'HELP' if you're stuck." << endl; //tells the user what all they can do
     cin >> input; //takes in user input
     for (int i = 0; i < strlen(input); ++i){
@@ -69,51 +76,154 @@ int main(){//where all the action happens
     }
 
     else if (strcmp(input, "INVENTORY") == 0){
-      //iterate through the entire list of items and print each of them out
+      //if the user types "INVENTORY" then the program goes through and prints out all items in the inventory
+      cout << "The current items are in your inventory (" << inventory.size() << "): " << endl;
+      for (vector <item*>:: iterator it = inventory.begin(); it != inventory.end(); ++it){
+	cout << (*it) -> returnDescription() << endl;
+      }
     }
 
     else if (strcmp(input, "DROP") == 0){
+      //if the user types "DROP", the program then asks the user what item in their inventory to drop and drops it
       cout << "Which item would you like to drop?" << endl;
-      cin >> input;
-      //iterate through all of the items until the name of the user's specified item matches one in the inventory, then drop that item. Make sure to remove that item from the vector and add it to the room the user is currently in at the same time. If no item in the inventory matches the specified item the user wants to drop, print "Can't find item!". If the user tries to drop the burning bottle of alcohol in any room besides the generator room, print "Whew! That almost slipped out of your hands at the wrong place!" and keep it in the inventory.
+      cin >> input; //takes in user input
+      for (int i = 0; i < strlen(input); ++i){
+	//converts all characters of the user's input to uppercase
+	input[i] = toupper(input[i]);
+      } 
+      for (vector <item*>:: iterator it = inventory.begin(); it != inventory.end(); ++it){
+	if (strcmp(input, (*it) -> returnDescription()) == 0){
+	  //if an item in the inventory matches the user's search, one of the following happens
+	  if (strcmp("GRENADE", input) == 0 && currentRoom != layout[12]){
+	    //if the user tries to drop the grenade before reaching the generator, the program doesn't let them do that
+	    cout << "Whoops! Almost dropped that in the wrong place!" << endl;
+	    break;
+	  }
 
-    else {
-      //cross-check the user's input with the name of the item currently in the room to see if the user wants to pick up that item. If so, pick up the item and remove it from the room simultaneously. If not, display the message below.
-      //if none of the above are valid then the following message prints
-      cout << "Not a valid input!" << endl;
+	  else if (strcmp("GRENADE", input) == 0 && currentRoom == layout[12]){
+	    //if the user drops the grenade in the generator room, the program drops the grenade and deletes it from the inventory and sets "detonated" to true (setting up the end of the game), and changes the generator room's description
+	    cout << "BOOM! You blew up the generator! Now go back outside and get to safety!" << endl;
+	    delete (*it);
+	    inventory.erase(it);
+	    detonated = true;
+	    strcpy(input, "Get out of here! This room is burning!");
+	    currentRoom -> setDescription(input);
+	    break;
+	  }
+
+	  else {
+	    //if the user drops any other item, it removes that item from their inventory and adds it to the room
+	    currentRoom -> setItems(*it);
+	    inventory.erase(it);
+	    break;
+	  }
+	}
+
+	else {
+	  //if the user input doesn't match the name of the item then the following message prints
+	  cout << "No item in your inventory matches your search!" << endl;
+	}
+      }
     }
 
-	  
+    else {
+      //if the user input doesn't match any of the aforementioned fields...
+      if (currentRoom -> checkForItemInRoom(input) == true){
+	//checks to see if the user typed in the name of an item
+	bool matchesPresent = false;
+	bool alcoholPresent = false;
+	inventory.push_back(currentRoom -> getItemInRoom(input)); //adds the item to the user's inventory
+	for (vector <item*>:: iterator it = inventory.begin(); it != inventory.end(); ++it){
+	  //iterates through all the items in the inventory to see if the user is carrying both matches and alcohol, and if they are, turns those two items into a single grenade
+	  if (strcmp("MATCHES", (*it) -> returnDescription()) == 0){
+	    matchesPresent = true;
+	  }
+	  if (strcmp("ALCOHOL", (*it) -> returnDescription()) == 0){
+	    alcoholPresent = true;
+	  }
+	}
+
+	if (matchesPresent == true && alcoholPresent == true){
+	  bool matchesDeleted = false;
+	  bool alcoholDeleted = false;
+	  for (vector <item*>:: iterator it = inventory.begin(); it != inventory.end(); ++it){
+	    if (strcmp("MATCHES", (*it) -> returnDescription()) == 0){
+	      delete (*it);
+	      inventory.erase(it);
+	      matchesDeleted = true;
+	    }
+	    if (strcmp("ALCOHOL", (*it) -> returnDescription()) == 0){
+	      delete (*it);
+	      inventory.erase(it);
+	      alcoholDeleted = true;
+	    }
+
+	    if (matchesDeleted == true && alcoholDeleted == true){
+	      break;
+	    }
+	  }
+
+
+	  char description[20];
+	  strcpy(description, "GRENADE");
+	  item* grenade = new item();
+	  grenade -> setDescription(description);
+	  inventory.push_back(grenade);
+
+	  //prints the following message once the grenade is made
+	  cout << "You picked up the bottle of alcohol with matches in hand! You combined the two to make a grenade! Now time to detonate it in the generator room!" << endl;
+	}
+      }
+
+      //if none of the above are valid then the following message prints
+      else {
+	cout << "Not a valid input!" << endl;
+      }
+    }	  
   }
 }
 
-void initializeRooms(vector <Room*> &layout){//sets the position, exits, items, and descriptions of all rooms
+  void initializeRooms(vector <Room*> &layout, vector <item*> &inventory){//sets the position, exits, items, and descriptions of all rooms
 
   char description[150];//used to create room descriptions
-  char itemDescription[20];
-  
-  strcpy("Matches", itemDescription);
+  char itemDescription[20];//used to create item descriptions
+
+  //matches item creation code
+  strcpy(itemDescription, "MATCHES");
   item* matches = new item();
-  
-  strcpy("Crowbar", itemDescription);
+  matches -> setDescription(itemDescription);
+  inventory.push_back(matches);
+
+  //crowbar item creation code
+  strcpy(itemDescription, "CROWBAR");
   item* crowbar = new item();
+  crowbar -> setDescription(itemDescription);
 
-  strcpy("Moldy banana", itemDescription);
+  //banana item creation code
+  strcpy(itemDescription, "BANANA");
   item* moldy_banana = new item();
+  moldy_banana -> setDescription(itemDescription);
 
-  strcpy("Pencil", itemDescription);
+  //pencil item creation code
+  strcpy(itemDescription, "PENCIL");
   item* pencil = new item();
+  pencil -> setDescription(itemDescription);
 
-  strcpy("Bottle of alcohol", itemDescription);
+  //alcohol item creation code
+  strcpy(itemDescription, "ALCOHOL");
   item* alcohol = new item();
+  alcohol -> setDescription(itemDescription);
 
-  strcpy("Frappuccino", itemDescription);
+  //frappuccino item creation code
+  strcpy(itemDescription, "FRAPPUCCINO");
   item* frappe = new item();
-  
+  frappe -> setDescription(itemDescription);
+
   //outside room creation code
   strcpy(description, "You're outside. There is a nice, cool breeze. ");
   Room* outside = new Room();
   outside -> setDescription(description);
+  outside -> setItems(crowbar);
   layout.push_back(outside);
 
   //lobby room creation code
@@ -126,6 +236,7 @@ void initializeRooms(vector <Room*> &layout){//sets the position, exits, items, 
   strcpy(description, "You're in the Janitor's Closet. Looks like he has a drinking problem... ");
   Room* closet = new Room();
   closet -> setDescription(description);
+  closet -> setItems(alcohol);
   layout.push_back(closet);
 
   //gym room creation code
@@ -144,6 +255,7 @@ void initializeRooms(vector <Room*> &layout){//sets the position, exits, items, 
   strcpy(description, "You're in the physics classroom. E = MC^2. ");
   Room* physics_class = new Room();
   physics_class -> setDescription(description);
+  physics_class -> setItems(pencil);
   layout.push_back(physics_class);
 
   //chemistry classroom creation code
@@ -192,12 +304,14 @@ void initializeRooms(vector <Room*> &layout){//sets the position, exits, items, 
   strcpy(description, "You're in the cafeteria. What's the special? ");
   Room* cafeteria = new Room();
   cafeteria -> setDescription(description);
+  cafeteria -> setItems(moldy_banana);
   layout.push_back(cafeteria);
 
   //starbucks room creation code
   strcpy(description, "Hi welcome to Starbucks! What would you like to drink today? ");
   Room* starbucks = new Room();
   starbucks -> setDescription(description);
+  starbucks -> setItems(frappe);
   layout.push_back(starbucks);
 
   //chipotle room creation code

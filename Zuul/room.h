@@ -6,6 +6,7 @@
 #include <cstring>
 #include <vector>
 #include <map>
+#include "item.h"
 
 using namespace std;
 
@@ -18,13 +19,13 @@ class Room {
   void getExits();//gets/returns the exits of the current room
   map<int, Room*> returnMap(); //returns the map
   void setItems(item* item);
-  void getItems(Room* currentRoom, item* item);
+  void getItems();
+  bool checkForItemInRoom(char itemName[20]);
+  item* getItemInRoom(char itemName[20]);
   ~Room();//destructor
  private: //all private variables
   char roomDescription[80]; //character array holding room description
-  char itemDescription[20];
   map <int, Room*> roomLayout;//map showing where each exit is
-  struct item;
   vector <item*> vect;
 };
 

@@ -2,7 +2,9 @@
 #include <iostream>
 #include <cstring>
 #include <map>
+#include <vector>
 #include "room.h"
+#include "item.h"
 
 using namespace std;
 
@@ -58,12 +60,41 @@ map<int, Room*> Room::returnMap(){
   return roomLayout;
 }
 
-void setItems(item* item){
+void Room::setItems(item* item){
+  //adds items to the room vector
   vect.push_back(item);
 }
 
-void getItems(Room* currentRoom, item* item){
-  
+void Room::getItems(){
+  //prints out the descriptions of the items in the current room
+  for (vector <item*>::iterator it = vect.begin(); it != vect.end(); ++it){
+    cout << (*it) -> returnDescription() << endl;
+  }
+}
+
+bool Room::checkForItemInRoom(char itemName[20]){
+  //checks to see if a particular item is in a room
+  for (vector <item*>::iterator it = vect.begin(); it != vect.end(); ++it){
+    if (strcmp(itemName, (*it) -> returnDescription()) == 0){
+      return true;
+    }
+  }
+
+  return false;
+}
+
+item* Room::getItemInRoom(char itemName[20]){
+  //gets the item in a room given that it's present
+  item* temp;
+  for (vector <item*>::iterator it = vect.begin(); it != vect.end(); ++it){
+    if (strcmp(itemName, (*it) -> returnDescription()) == 0){
+      temp = *it;
+      vect.erase(it);
+      return temp;
+    }
+  }
+
+  return NULL;
 }
 
 Room::~Room() {

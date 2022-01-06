@@ -1,0 +1,18 @@
+//header guards
+#ifndef ITEM_H
+#define ITEM_H
+//libraries
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class item {
+ public: //all public functions
+  item(); //constructor
+  void setDescription(char description[20]); //creates a description for the item
+  void getDescription(); //gets the item's description to print out
+  ~item(); //destructor
+};
+
+#endif
