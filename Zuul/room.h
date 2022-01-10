@@ -4,7 +4,9 @@
 //libraries
 #include <iostream>
 #include <cstring>
+#include <vector>
 #include <map>
+#include "item.h"
 
 using namespace std;
 
@@ -13,15 +15,18 @@ class Room {
   Room();//constructor
   void setDescription(char description[80]);//sets the room description
   void returnDescription();//returns the description of the room
-  void setExits(char exit[10], Room* adjacentRoom);
+  void setExits(int description, Room* adjacentRoom);
   void getExits();//gets/returns the exits of the current room
-  map<char*, Room*> returnMap(); //returns the map
+  map<int, Room*> returnMap(); //returns the map
+  void setItems(item* item);
+  void getItems();
+  bool checkForItemInRoom(char itemName[20]);
+  item* getItemInRoom(char itemName[20]);
   ~Room();//destructor
  private: //all private variables
   char roomDescription[80]; //character array holding room description
-  map <char*, Room*> roomLayout;//map showing where each exit is
-  char exit2 [10]; //for N, S, E, W commands
-  char* exitPtr; //the char pointer in the map
+  map <int, Room*> roomLayout;//map showing where each exit is
+  vector <item*> vect;
 };
 
 #endif
