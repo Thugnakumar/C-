@@ -1,6 +1,6 @@
 /*
 Name: Varun Krishnakumar
-Date Last Modified: 1/5/22
+Date Last Modified: 1/12/22
 This is the zuul project. The theme of this zuul game is "The John Wick of Colleges". You're trying to break into Stanford University and burn it to the ground because you hate colleges so much (the application process nearly killed you). The will see a message on the screen alerting them of the room that they are in, all exits in that room, and any items inside the room. The user has the option to pick up items, drop them, and also leave the room through one of the exits by typing any of the above. When the user drops their flaming bottle of alcohol in  the generator room and makes it back outside, they've won the game!
  */
 
@@ -43,7 +43,7 @@ int main(){//where all the action happens
     currentRoom -> getExits(); //prints out all of the exits in the room the user is currently in
     cout << "There are items:" << endl;
     currentRoom -> getItems(); //prints all items in the room
-    cout << endl << "Type in the name of an exit to move. Type in the name of an object to pick it up. Type 'INVENTORY' to see what items you currently have. Type in 'DROP' to drop an item and then type in its name to drop it. Type in 'HELP' if you're stuck." << endl; //tells the user what all they can do
+    cout << endl << "Type in the name of an exit to move. Type in the name of an object to pick it up. Type 'INVENTORY' to see what items you currently have. Type in 'DROP' to drop an item and then type in its name to drop it. Type 'QUIT' to exit the game. Type in 'HELP' if you're stuck." << endl; //tells the user what all they can do
     cin >> input; //takes in user input
     for (int i = 0; i < strlen(input); ++i){
       //converts all characters of the user's input to uppercase
@@ -73,6 +73,10 @@ int main(){//where all the action happens
     else if (strcmp(input, "SOUTH") == 0){
       //goes to the room to the south if the user types "SOUTH"
       movement(currentRoom, 1);
+    }
+
+    else if (strcmp(input, "QUIT") == 0){
+      break;
     }
 
     else if (strcmp(input, "INVENTORY") == 0){
@@ -181,6 +185,8 @@ int main(){//where all the action happens
       }
     }	  
   }
+
+  cout << "Thanks for playing this game! Goodbye!" << endl;
 }
 
   void initializeRooms(vector <Room*> &layout, vector <item*> &inventory){//sets the position, exits, items, and descriptions of all rooms
