@@ -12,6 +12,8 @@ This is the Linked List project. In this project, the user will be able to add, 
 using namespace std;
 
 int main(){
+  Node* head = NULL; //empty head node which will be updated later
+  bool prev = NULL; //boolean to check if I'm at the head;
   char message[300]; //character array that stores the message detailing the purpose of the program
   char input[10]; //character array to store input
   cout << "Welcome to the Student List program!";
@@ -28,6 +30,8 @@ int main(){
 
     if (strcmp(input, "ADD") == 0){
       //calls the add function to add a student to the list
+      Node* node = new Node(new Student());
+      add(head, node);
     }
 
     else if (strcmp(input, "DELETE") == 0){
@@ -55,6 +59,34 @@ int main(){
     else {
       //prints the following message if what the user typed in isn't valid
       cout << "Not a valid input!" << endl;
+    }
+  }
+}
+
+void add(Node* &current, Node* &node, bool &prev){
+  if (current == head){
+    prev = true;
+  }
+
+  else {
+    prev = false;
+  }
+  
+  if (current == NULL){
+    head = node;
+  }
+
+  else {
+    if (current -> getStudent() -> returnID() >= node -> getStudent() -> returnID()){
+      node -> setNext(current);
+
+      if (prev == true){
+	head = node;
+      }
+    }
+
+    else if (head -> getStudent() -> returnID() < node -> getStudent() -> returnID()){
+      
     }
   }
 }

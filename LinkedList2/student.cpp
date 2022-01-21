@@ -40,9 +40,9 @@ int Student::returnID(){
   return id;
 }
 
-void Student::printGPA(){
+float Student::returnGPA(){
   //prints the GPA of the student
-  cout << "GPA: " << gpa << endl;
+  return gpa;
 }
 
 Student* Student::getStudent(){

@@ -11,7 +11,7 @@ public: //all public functions
   Student(); //constructor
   void printName(); //prints the name
   int returnID(); //returns the ID
-  void printGPA(); //prints the GPA
+  float returnGPA(); //prints the GPA
   Student* getStudent(); //returns a pointer to the current student
   ~Student(); //destructor
 private: //private variables
