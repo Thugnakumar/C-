@@ -1,7 +1,7 @@
 //all the libraries
 #include <iostream>
 #include <cstring>
-#include "student.h"
+#include "Student.h"
 #include <math.h>
 
 using namespace std;
