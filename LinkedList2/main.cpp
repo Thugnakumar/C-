@@ -9,10 +9,10 @@ This is the Linked List project. In this project, the user will be able to add, 
 #include "Node.h"
 #include "Student.h"
 
-void add(Node* &current, Node* &node);
-void traverse(Node* &current);
-void remove(Node* &current, int ID);
-void average(Node* &current);
+void add(Node* current, Node* node, Node* &head);
+void traverse(Node* current);
+void remove(Node* current, Node* &head, int ID);
+void average(Node* current);
 
 using namespace std;
 
@@ -36,7 +36,7 @@ int main(){
     if (strcmp(input, "ADD") == 0){
       //calls the add function to add a student to the list
       Node* node = new Node(new Student());
-      add(head, node);
+      add(head, node, head);
     }
 
     else if (strcmp(input, "DELETE") == 0){
@@ -45,7 +45,7 @@ int main(){
       cout << "Enter the ID of the student you wish to delete: ";
       cin >> id;
       cout << endl;
-      remove(head, id);
+      remove(head, head, id);
     }
 
     else if (strcmp(input, "PRINT") == 0){
@@ -75,11 +75,8 @@ int main(){
   }
 }
 
-void add(Node* &current, Node* &node){
+void add(Node* current, Node* node, Node* &head){
 
-  //if head = NULL then input = head
-  //if 
-  
   if (current == NULL){
     //if the linked list is empty, set the added node to be the head
     head = node;
@@ -108,13 +105,13 @@ void add(Node* &current, Node* &node){
 
       else {
 	//if the passed in node's ID is larger than both the currently evaluated node AND the next node, then keep traversing through the linked list
-	add (current -> getNext(), node);
+	add (current -> getNext(), node, head);
       }
     }
   }
 }
 
-void traverse(Node* &current){
+void traverse(Node* current){
   //goes through the linked list and prints out the details of each node
   
   if (current == NULL){
@@ -131,7 +128,7 @@ void traverse(Node* &current){
   traverse(current -> getNext());
 }
 
-void remove(Node* &current, int ID) {
+void remove(Node* current, Node* &head, int ID) {
   //goes through the linked list and removes the specified node
   
   if (current == NULL){
@@ -154,18 +151,18 @@ void remove(Node* &current, int ID) {
     if (current -> getNext() -> getStudent() -> returnID() == ID){
       //if the next node has the ID we are looking for, then transfer the contents of the next node to a temporary node, have the current node point to the node two nodes down the list, and delete the temporary node
       Node* temp = current -> getNext();
-      current -> setNext(temp -> next());
+      current -> setNext(temp -> getNext());
       temp -> ~Node();
     }
 
     else {
       //if none of the above are true, keep traversing through the list until one of the above become true
-      remove(current -> getNext(), ID);
+      remove(current -> getNext(), head, ID);
     }
   }
 }
 
-void average(Node* &current){
+void average(Node* current){
   //averages all of the GPAs
   
   float avg = 0; //variable to store sum/average of GPAs

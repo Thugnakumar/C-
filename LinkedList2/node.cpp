@@ -6,6 +6,7 @@
 #include <cstring>
 
 #include "Node.h"
+#include "Student.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ Node::Node(Student* newStudent) {
 
 // (De)constructor
 Node::~Node() {
-  delete &student;
+  delete student;
   nextNode = NULL;
 }
 
