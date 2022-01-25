@@ -1,5 +1,5 @@
 /*Name: Varun Krishnakumar
-Date: 1/21/2022
+Date: 1/25/2022
 This is the Linked List project. In this project, the user will be able to add, remove, and print students in a list. They can QUIT the code at any time. The entire project uses the Linked List data structure to make all the students.
 */
 
@@ -36,6 +36,7 @@ int main(){
     if (strcmp(input, "ADD") == 0){
       //calls the add function to add a student to the list
       Node* node = new Node(new Student());
+      traverse(node);
       add(head, node, head);
     }
 
@@ -77,6 +78,8 @@ int main(){
 
 void add(Node* current, Node* node, Node* &head){
 
+  cout << "entered" << endl;
+  
   if (current == NULL){
     //if the linked list is empty, set the added node to be the head
     head = node;
@@ -86,29 +89,35 @@ void add(Node* current, Node* node, Node* &head){
     //if the linked list isn't empty...
     if (current -> getStudent() -> returnID() >= node -> getStudent() -> returnID() && (current == head)){
       //if we're evaluating the head node and the ID of the node is smaller than the ID of the head, then make the passed in node the new head
+      cout << "The new node is the new head" << endl;
       node -> setNext(current);
       head = node;
     }
 
     else if (current -> getStudent() -> returnID() < node -> getStudent() -> returnID()){
       //if the student ID is less than the ID of the currently evaluated node...
-      if (current -> getNext() -> getStudent() -> returnID() >= node -> getStudent() -> returnID()){
+      if (current -> getNext() == NULL){
+	cout << "End of list" << endl;
+	//if we're at the end of the list, set the next node of the currently evaluated node to be the node that's passed in
+	current -> setNext(node);
+      }
+
+      else if (current -> getNext() -> getStudent() -> returnID() >= node -> getStudent() -> returnID()){
+	cout << "Inserting between 2 nodes" << endl;
 	//if the student ID of the passed in node is less than or equal to the ID of the next node, then set the node's next node to be the next node of the currently evaluated node, then set the currently evaluated node's next node to be the node that's passed in
 	node -> setNext(current -> getNext());
 	current -> setNext(node);
       }
 
-      else if (current -> getNext() == NULL){
-	//if we're at the end of the list, set the next node of the currently evaluated node to be the node that's passed in
-	current -> setNext(node);
-      }
-
       else {
+	cout << "recursion" << endl;
 	//if the passed in node's ID is larger than both the currently evaluated node AND the next node, then keep traversing through the linked list
 	add (current -> getNext(), node, head);
       }
     }
   }
+
+  cout << "returning from add" << endl;
 }
 
 void traverse(Node* current){
@@ -137,13 +146,10 @@ void remove(Node* current, Node* &head, int ID) {
     return;
   }
 
-  if (current == head){
-    //if the current node is the head
-    if (current -> getStudent() -> returnID() == ID){
-      //if the ID is the same then set the next node in the list to be the head and delete the head
-      head = current -> getNext();
-      current -> ~Node();
-    }
+  if (current == head && current -> getStudent() -> returnID() == ID){
+    //if the current node is the head and if the ID is the same then set the next node in the list to be the head and delete the head
+    head = current -> getNext();
+    current -> ~Node();
   }
 
   else {
