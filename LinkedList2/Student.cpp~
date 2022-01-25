@@ -32,7 +32,7 @@ Student::Student(){ //constructor
 
 void Student::printName(){
   //prints the name of the student
-  cout << << firstName << " " << lastName;
+  cout << firstName << " " << lastName;
 }
 
 int Student::returnID(){
@@ -52,6 +52,6 @@ Student* Student::getStudent(){
 
 Student::~Student(){
   //deletes all character arrays as it destroys the student object
-  delete [] firstName;
-  delete [] lastName;
+  delete firstName;
+  delete lastName;
 }

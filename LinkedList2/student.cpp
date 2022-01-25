@@ -51,7 +51,5 @@ Student* Student::getStudent(){
 }
 
 Student::~Student(){
-  //deletes all character arrays as it destroys the student object
-  delete [] firstName;
-  delete [] lastName;
+  
 }

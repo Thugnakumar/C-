@@ -12,13 +12,15 @@ This is the Linked List project. In this project, the user will be able to add, 
 void add(Node* current, Node* node, Node* &head);
 void traverse(Node* current);
 void remove(Node* current, Node* &head, int ID);
-void average(Node* current);
+void average(Node* current, float avg, int counter);
 
 using namespace std;
 
 int main(){
   Node* head = NULL; //empty head node which will be updated later
   bool prev = NULL; //boolean to check if I'm at the head;
+  float avg = 0; //variable to store sum/average of GPAs
+  int counter = 0; //counts the number of GPAs in the linked list
   char message[300]; //character array that stores the message detailing the purpose of the program
   char input[10]; //character array to store input
   cout << "Welcome to the Student List program!";
@@ -36,7 +38,6 @@ int main(){
     if (strcmp(input, "ADD") == 0){
       //calls the add function to add a student to the list
       Node* node = new Node(new Student());
-      traverse(node);
       add(head, node, head);
     }
 
@@ -56,7 +57,7 @@ int main(){
 
     else if (strcmp(input, "AVERAGE") == 0){
       //calls the average function to print the average of all the students' GPAs
-      average(head);
+      average(head, avg, counter);
     }
 
     else if (strcmp(input, "QUIT") == 0){
@@ -78,8 +79,6 @@ int main(){
 
 void add(Node* current, Node* node, Node* &head){
 
-  cout << "entered" << endl;
-  
   if (current == NULL){
     //if the linked list is empty, set the added node to be the head
     head = node;
@@ -89,7 +88,6 @@ void add(Node* current, Node* node, Node* &head){
     //if the linked list isn't empty...
     if (current -> getStudent() -> returnID() >= node -> getStudent() -> returnID() && (current == head)){
       //if we're evaluating the head node and the ID of the node is smaller than the ID of the head, then make the passed in node the new head
-      cout << "The new node is the new head" << endl;
       node -> setNext(current);
       head = node;
     }
@@ -97,27 +95,22 @@ void add(Node* current, Node* node, Node* &head){
     else if (current -> getStudent() -> returnID() < node -> getStudent() -> returnID()){
       //if the student ID is less than the ID of the currently evaluated node...
       if (current -> getNext() == NULL){
-	cout << "End of list" << endl;
 	//if we're at the end of the list, set the next node of the currently evaluated node to be the node that's passed in
 	current -> setNext(node);
       }
 
       else if (current -> getNext() -> getStudent() -> returnID() >= node -> getStudent() -> returnID()){
-	cout << "Inserting between 2 nodes" << endl;
 	//if the student ID of the passed in node is less than or equal to the ID of the next node, then set the node's next node to be the next node of the currently evaluated node, then set the currently evaluated node's next node to be the node that's passed in
 	node -> setNext(current -> getNext());
 	current -> setNext(node);
       }
 
       else {
-	cout << "recursion" << endl;
 	//if the passed in node's ID is larger than both the currently evaluated node AND the next node, then keep traversing through the linked list
 	add (current -> getNext(), node, head);
       }
     }
   }
-
-  cout << "returning from add" << endl;
 }
 
 void traverse(Node* current){
@@ -149,16 +142,22 @@ void remove(Node* current, Node* &head, int ID) {
   if (current == head && current -> getStudent() -> returnID() == ID){
     //if the current node is the head and if the ID is the same then set the next node in the list to be the head and delete the head
     head = current -> getNext();
-    current -> ~Node();
+    delete current;
   }
 
   else {
-    //if the current node isn't the head
-    if (current -> getNext() -> getStudent() -> returnID() == ID){
+    //if the current node isn't the head or the head ID doesn't match
+
+    if (current -> getNext() == NULL) {
+      //if the program makes it to the end of the list and none of the numbers match then the following message prints
+      cout << "Nothing in the list matched the search!" << endl;
+    }
+    
+    else if (current -> getNext() -> getStudent() -> returnID() == ID){
       //if the next node has the ID we are looking for, then transfer the contents of the next node to a temporary node, have the current node point to the node two nodes down the list, and delete the temporary node
       Node* temp = current -> getNext();
       current -> setNext(temp -> getNext());
-      temp -> ~Node();
+      delete temp;
     }
 
     else {
@@ -168,11 +167,9 @@ void remove(Node* current, Node* &head, int ID) {
   }
 }
 
-void average(Node* current){
+void average(Node* current, float avg, int counter){
   //averages all of the GPAs
   
-  float avg = 0; //variable to store sum/average of GPAs
-  int counter = 0; //counts the number of GPAs in the linked list
   if (current == NULL){
     //if we're at the end of the list, calculate the average and print it out, then exit the function
     avg = avg/counter;
@@ -183,5 +180,5 @@ void average(Node* current){
   avg += current -> getStudent() -> returnGPA();//sums up the averages
   counter++;//increments the count of GPAs every time the sum is updated
 
-  average(current -> getNext()); //uses recursion to traverse through the linked list until we reach the end
+  average(current -> getNext(), avg, counter); //uses recursion to traverse through the linked list until we reach the end
 }
