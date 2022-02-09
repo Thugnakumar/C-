@@ -1,0 +1,20 @@
+#include <iostream>
+#include <cstring>
+#include "stack.h"
+
+using namespace std;
+
+stack::stack(){
+}
+
+bool stack::push(node * &node){
+}
+
+bool stack::pop(node * &node){
+}
+
+bool stack::peek(node node){
+}
+
+bool isEmpty(node node){
+}
