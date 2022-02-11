@@ -1,6 +1,6 @@
 /*
 Name: Varun Krishnakumar
-Date: 2/9/22
+Date: 2/11/22
 This is the header file for the stack. This has 5 main classes (apart from the constructor and destructor): push, pop, peek, isEmpty, and isFull. 
  */
 
@@ -15,16 +15,17 @@ class stack {
  public:
   stack();
   ~stack();
-  bool push(node * &node);
-  bool pop(node * &node);
-  bool peek(node node);
-  bool isEmpty(node node);
-  bool isFull(node node);
+  bool push(node * &head, node * node);
+  bool pop(node * &head, node * current);
+  char peek(node * head);
+  bool isEmpty(node * head);
+  bool isFull(node * head);
+  void print(node * head);
 
  private:
   bool test;
   struct node {
-    char * data;
+    char data;
     node * next;
   };
 };
