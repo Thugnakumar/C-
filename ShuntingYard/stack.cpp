@@ -8,6 +8,10 @@ stack::stack(){
 }
 
 bool stack::push(node * &head, node * node){
+  if (head == NULL){
+    head = node;
+  }
+  
   if (node != head){
     node->next = head;
     head = node;

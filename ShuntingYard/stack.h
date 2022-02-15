@@ -11,6 +11,11 @@ This is the header file for the stack. This has 5 main classes (apart from the c
 
 using namespace std;
 
+struct node {
+  char data;
+  node * next;
+};
+
 class stack {
  public:
   stack();
@@ -24,10 +29,6 @@ class stack {
 
  private:
   bool test;
-  struct node {
-    char data;
-    node * next;
-  };
 };
 
 #endif

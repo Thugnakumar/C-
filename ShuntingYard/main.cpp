@@ -16,6 +16,8 @@ struct node {
   node * next;
 };
 
+void createStackNode(node * &head, stack * &stack);
+
 int main() {
   node * head = new node();
   head->data = NULL;
@@ -33,10 +35,8 @@ void createStackNode(node * &head, stack * &stack){
   node->data = cin >> input;
   node->next = NULL;
 
-  if (head->data ==NULL){
-    //if there is no head, then set the newly created node to be the head
-    head = node;
-  }
+  stack->push(head,node);
 
-  stack->push(head, node);
+  cout << stack->peek(head);
 }
+
