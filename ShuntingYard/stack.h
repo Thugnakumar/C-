@@ -8,13 +8,9 @@ This is the header file for the stack. This has 5 main classes (apart from the c
 #define STACK_H
 
 #include <iostream>
+#include "node.h"
 
 using namespace std;
-
-struct node {
-  char data;
-  node * next;
-};
 
 class stack {
  public:
@@ -23,12 +19,9 @@ class stack {
   bool push(node * &head, node * node);
   bool pop(node * &head, node * current);
   char peek(node * head);
-  bool isEmpty(node * head);
-  bool isFull(node * head);
   void print(node * head);
 
  private:
-  bool test;
 };
 
 #endif

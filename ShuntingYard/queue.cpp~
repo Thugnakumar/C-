@@ -1,29 +1,31 @@
 #include <iostream>
 #include <cstring>
-#include "stack.h"
+#include "queue.h"
 #include "node.h"
 
 using namespace std;
 
-stack::stack(){
+queue::queue(){
 }
 
-bool stack::push(node * &head, node * node){
+bool queue::enqueue(node * &head, node * node){
   if (head == NULL){
     head = node;
   }
-  
+
   if (node != head){
     node->next = head;
     head = node;
   }
-  
+
   return true;
 }
 
-bool stack::pop(node * &head, node * current){
+bool queue::dequeue(node * &head, node * current){
   current = head;
-  head = head->next;
+  while (current->next != NULL){
+    current = current->next;
+  }
   delete current;
   return true;
 }
@@ -32,12 +34,17 @@ char stack::peek(node * head){
   return head->data;
 }
 
-void stack::print(node * head){
+void queue::print(node * head){
   while (head->data != '\0'){
     cout << head->data;
     head = head->next;
   }
-}   
+}
 
 stack::~stack(){
 }
+
+
+
+
+

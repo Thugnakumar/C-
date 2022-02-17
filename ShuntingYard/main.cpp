@@ -8,35 +8,70 @@ This is the shunting yard algorithm. Update the description of this algorithm as
 #include <cstring>
 #include <cctype>
 #include "stack.h"
+#include "node.h"
+#include "queue.h"
 
 using namespace std;
 
-struct node {
-  char data;
-  node * next;
-};
-
 void createStackNode(node * &head, stack * &stack);
+void createQueueNode(node * &head, queue * &queue);
 
 int main() {
   node * head = new node();
-  head->data = NULL;
+  head->data = '\0';
   head->next = NULL;
 
-  stack * stack = new stack();
+  stack * newStack = new stack();
+  queue * newQueue = new queue();
+  
+  /*  createStackNode(head, newStack);
+  createStackNode(head, newStack);
+  createStackNode(head, newStack);
 
-  createStackNode(head, stack);
+  newStack->pop(head, head);
+  newStack->print(head);
+  cout << endl;
+  newStack->pop(head, head);
+  newStack->print(head);
+  cout << endl;
+  newStack->pop(head, head);
+  newStack->print(head);
+  cout << endl;
+  */
+
+  createQueueNode(head, newQueue);
+  createQueueNode(head, newQueue);
+  createQueueNode(head, newQueue);
+
+  newQueue->dequeue(head);
+  newQueue->print(head);
+  cout << "dequeued" << endl;
+  newQueue->dequeue(head);
+  newQueue->print(head);
+  cout << "dequeued" << endl;
+  newQueue->dequeue(head);
+  newQueue->print(head);
+  cout << "dequeued" << endl;
 }
 
 void createStackNode(node * &head, stack * &stack){
-  char input;
-  node * node = new node();
+  node * newNode = new node();
 
-  node->data = cin >> input;
-  node->next = NULL;
+  cin >> newNode->data;
+  newNode->next = NULL;
 
-  stack->push(head,node);
-
-  cout << stack->peek(head);
+  stack->push(head,newNode);
+  stack->print(head);
+  cout << endl;
 }
 
+void createQueueNode(node * &head, queue * &queue){
+  node * newNode = new node();
+
+  cin >> newNode->data;
+  newNode->next = NULL;
+
+  queue->enqueue(head,newNode);
+  queue->print(head);
+  cout << endl;
+}
