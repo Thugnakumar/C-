@@ -45,12 +45,15 @@ int main() {
 
   newQueue->dequeue(head);
   newQueue->print(head);
+  cout << endl;
   cout << "dequeued" << endl;
   newQueue->dequeue(head);
   newQueue->print(head);
+  cout << endl;  
   cout << "dequeued" << endl;
   newQueue->dequeue(head);
   newQueue->print(head);
+  cout << endl;
   cout << "dequeued" << endl;
 }
 

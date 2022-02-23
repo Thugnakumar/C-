@@ -8,12 +8,12 @@ using namespace std;
 queue::queue(){
 }
 
-bool queue::enqueue(node * &head, node * node){
+bool queue::enqueue(node * &head, node * &node){
   if (head == NULL){
     head = node;
   }
 
-  if (node != head){
+  else {
     node->next = head;
     head = node;
   }
@@ -39,7 +39,7 @@ bool queue::dequeue(node * &head){
 }
 
 void queue::print(node * head){
-  while (head->data != '\0'){
+  while (head != NULL){
     cout << head->data;
     head = head->next;
   }
