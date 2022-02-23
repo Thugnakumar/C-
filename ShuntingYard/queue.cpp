@@ -23,6 +23,18 @@ bool queue::enqueue(node * &head, node * &node){
 
 bool queue::dequeue(node * &head){
   node * current = head;
+
+  if (head == NULL) {
+    cout << "Nothing in the queue!" << endl;
+    return true;
+  }
+
+  else if (head->next == NULL) {
+    head = current->next;
+    delete current;
+    return true;
+  }
+
   while (current->next->next != NULL){
     cout << current->data;
     cout << current->next->data << endl;
@@ -31,7 +43,6 @@ bool queue::dequeue(node * &head){
   cout << "out of the while loop" << endl;
   cout << current->data << endl;
   cout << current->next->data << endl;
-  cout << current->next->next->data << endl;
   node * temp = current->next;
   current->next = temp->next;
   delete temp;

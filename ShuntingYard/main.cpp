@@ -17,9 +17,7 @@ void createStackNode(node * &head, stack * &stack);
 void createQueueNode(node * &head, queue * &queue);
 
 int main() {
-  node * head = new node();
-  head->data = '\0';
-  head->next = NULL;
+  node * head = NULL;
 
   stack * newStack = new stack();
   queue * newQueue = new queue();
@@ -44,17 +42,21 @@ int main() {
   createQueueNode(head, newQueue);
 
   newQueue->dequeue(head);
+  cout << "Current order of nodes: ";
   newQueue->print(head);
   cout << endl;
   cout << "dequeued" << endl;
   newQueue->dequeue(head);
+  cout << "Current order of nodes: ";
   newQueue->print(head);
   cout << endl;  
   cout << "dequeued" << endl;
   newQueue->dequeue(head);
+  cout << "Current order of nodes: ";
   newQueue->print(head);
   cout << endl;
   cout << "dequeued" << endl;
+  newQueue->dequeue(head);
 }
 
 void createStackNode(node * &head, stack * &stack){
