@@ -9,27 +9,37 @@ queue::queue(){
 }
 
 bool queue::enqueue(node * &head, node * &node){
+  //adds the node to the end of the queue
+  node * current = head;
   if (head == NULL){
     head = node;
   }
 
   else {
-    node->next = head;
-    head = node;
+    while (current->next != NULL){
+      current = current->next;
+    }
+    head->next = node;
   }
 
   return true;
 }
 
 bool queue::dequeue(node * &head){
+  //removes nodes from the front end of the queue
   node * current = head;
 
-  if (head == NULL) {
-    cout << "Nothing in the queue!" << endl;
+  if (head != NULL) {
+    head = current->next;
+    delete current;
     return true;
   }
 
-  else if (head->next == NULL) {
+  else {
+    cout << "There's nothing in the queue!" << endl;
+  }
+
+  /*else if (head->next == NULL) {
     head = current->next;
     delete current;
     return true;
@@ -46,7 +56,7 @@ bool queue::dequeue(node * &head){
   node * temp = current->next;
   current->next = temp->next;
   delete temp;
-  return true;
+  return true;*/
 }
 
 void queue::print(node * head){
