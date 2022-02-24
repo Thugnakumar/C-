@@ -9,6 +9,7 @@ queue::queue(){
 }
 
 bool queue::enqueue(node * &head, node * &node){
+  //alternate solution: pass node in by value and set that equal to head instead of creating new node current (like 14 isn't working for some reason). CHECK WITH GALBRAITH
   //adds the node to the end of the queue
   node * current = head;
   if (head == NULL){
