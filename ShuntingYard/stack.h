@@ -17,8 +17,9 @@ class stack {
   stack();
   ~stack();
   bool push(node * &head, node * node);
-  bool pop(node * &head, node * current);
-  char peek(node * head);
+  node* pop(node * &head);
+  node* peek(node * head);
+  void deleteHead(node * &head);
   void print(node * head);
 
  private:

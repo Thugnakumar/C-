@@ -15,13 +15,16 @@ using namespace std;
 
 void createStackNode(node * &head, stack * &stack);
 void createQueueNode(node * &head, queue * &queue);
-void shuntingYard(stack * &stack, queue * &queue);
+void shuntingYard(char arr[100]);
 
 int main() {
-  node * head = NULL;
 
   stack * newStack = new stack();
   queue * newQueue = new queue();
+
+  char input [100];
+  cout << "Enter an equation: ";
+  cin >> input;
   
   /*  createStackNode(head, newStack);
   createStackNode(head, newStack);
@@ -38,7 +41,7 @@ int main() {
   cout << endl;
   */
 
-  createQueueNode(head, newQueue);
+  /*createQueueNode(head, newQueue);
   createQueueNode(head, newQueue);
   createQueueNode(head, newQueue);
 
@@ -57,7 +60,7 @@ int main() {
   newQueue->print(head);
   cout << endl;
   cout << "dequeued" << endl;
-  newQueue->dequeue(head);
+  newQueue->dequeue(head);*/
 }
 
 void createStackNode(node * &head, stack * &stack){
@@ -82,7 +85,102 @@ void createQueueNode(node * &head, queue * &queue){
   cout << endl;
 }
 
-void shuntingYard(stack * &stack, queue * &queue) {
+void shuntingYard(char arr[100]) {
+
+  queue * inputQueue = new queue();
+  queue * outputQueue = new queue();
+  stack * operatorStack = new stack();
+  node * inputHead = NULL;
+  node * outputHead = NULL;
+  node * operatorStackHead = NULL;
+  
+  for (int i = 0; i < strlen(arr); ++i){
+    if (arr[i] != ' '){
+      createQueueNode(inputHead, inputQueue);
+    }
+  }
+
+  while (inputQueue->isEmpty(inputHead) == false){
+    //while there's stuff in the input queue...
+    node * top = inputQueue->dequeue(inputHead); //store the value of the top of the input stack to node "top"
+    inputQueue->deleteHead(inputHead); //delete the head of the input queue and reset the head
+    if (top >= '0' && top <= '9'){
+      //if the top node of the input queue is a number, add it to the output queue
+      outputQueue->enqueue(top);
+    }
+
+    else if (top == '+') {
+      //if the top node of the input queue is a '+', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
+      if (operatorStack->peek(operatorStackHead) != '(' || operatorStack->peek(operatorStackHead) != ')'){
+	while (operatorStack->peek(operatorStackHead) != NULL) {
+	  //if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
+	  operatorStack->pop(operatorStackHead);
+	}
+	//push the '+' sign to cleaned off operator stack
+	operatorStack->push(operatorStackHead, top);
+      }
+    }
+
+    else if (top == '-') {
+      //if the top node of the input queue is a '+', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
+      if (operatorStack->peek(operatorStackHead) != '(' || operatorStack->peek(operatorStackHead) != ')'){
+	while (operatorStack->peek(operatorStackHead) != NULL) {
+	  //if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
+	  operatorStack->pop(operatorStackHead);
+	}
+	//push the '+' sign to cleaned off operator stack
+	operatorStack->push(operatorStackHead, top);
+      }
+    }
+
+    else if (top == '*') {
+      //if the top node of the input queue is a '*', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
+      if (operatorStack->peek(operatorStackHead) != '(' || operatorStack->peek(operatorStackHead) != ')' || operatorStack->peek(operatorStackHead) != '^'){
+	while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '+' || operatorStack->peek(operatorStackHead) != '-') {
+	  //if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
+	  operatorStack->pop(operatorStackHead);
+	}
+	//push the '+' sign to cleaned off operator stack
+	operatorStack->push(operatorStackHead, top);
+      }
+
+      else {
+	operatorStack->push(operatorStackHead, top);
+      }
+    }
+
+    else if (top == '/') {
+      //if the top node of the input queue is a '*', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
+      if (operatorStack->peek(operatorStackHead) != '(' || operatorStack->peek(operatorStackHead) != ')' || operatorStack->peek(operatorStackHead) != '^'){
+	while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '+' || operatorStack->peek(operatorStackHead) != '-') {
+	  //if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
+	  operatorStack->pop(operatorStackHead);
+	}
+	//push the '+' sign to cleaned off operator stack
+	operatorStack->push(operatorStackHead, top);
+      }
+      
+      else {
+	operatorStack->push(operatorStackHead, top);
+      }
+    }
+
+    else if (top == '(') {
+      operatorStack->push(operatorStackHead, top);
+    }
+
+    else if (top == ')') {
+    }
+
+    else if (top == '^') {
+    }
+
+    else {
+      cout << "Not a valid input!" << endl;
+      break;
+    }
+
+  }
   
   /*while there are tokens to be read:
     read a token

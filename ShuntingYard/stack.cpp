@@ -21,15 +21,25 @@ bool stack::push(node * &head, node * node){
   return true;
 }
 
-bool stack::pop(node * &head, node * current){
-  current = head;
-  head = head->next;
-  delete current;
-  return true;
+node* stack::pop(node * &head){
+  if (head != NULL) {
+      return current;
+  }
+
+  else {
+    cout << "There is nothing in the stack!" << endl;
+    return NULL;
+  }
 }
 
-char stack::peek(node * head){
-  return head->data;
+node* stack::peek(node * head){
+  return head;
+}
+
+void deleteHead(node* &head){
+  node * current = head;  
+  head = head->next;
+  delete current;
 }
 
 void stack::print(node * head){
