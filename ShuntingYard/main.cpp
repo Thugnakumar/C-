@@ -110,59 +110,44 @@ void shuntingYard(char arr[100]) {
     }
 
     else if (top == '+') {
-      //if the top node of the input queue is a '+', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
-      if (operatorStack->peek(operatorStackHead) != '(' || operatorStack->peek(operatorStackHead) != ')'){
-	while (operatorStack->peek(operatorStackHead) != NULL) {
-	  //if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
-	  operatorStack->pop(operatorStackHead);
-	}
-	//push the '+' sign to cleaned off operator stack
-	operatorStack->push(operatorStackHead, top);
+      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '(') {
+	//if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
+	outputQueue->enqueue(outputHead, operatorStack->pop(operatorStackHead));
+	operatorStack->deleteHead(operatorStackHead);
       }
+      //push the '+' sign to cleaned off operator stack
+      operatorStack->push(operatorStackHead, top);
     }
 
     else if (top == '-') {
-      //if the top node of the input queue is a '+', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
-      if (operatorStack->peek(operatorStackHead) != '(' || operatorStack->peek(operatorStackHead) != ')'){
-	while (operatorStack->peek(operatorStackHead) != NULL) {
-	  //if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
-	  operatorStack->pop(operatorStackHead);
-	}
-	//push the '+' sign to cleaned off operator stack
-	operatorStack->push(operatorStackHead, top);
+      while (operatorStack->peek(operatorStackHead) != NULL|| operatorStack->peek(operatorStackHead) != '(') {
+	//if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
+	outputQueue->enqueue(operatorStack->pop(operatorStackHead));
+	operatorStack->deleteHead(operatorStackHead);
       }
+      //push the '+' sign to cleaned off operator stack
+      operatorStack->push(operatorStackHead, top);
     }
 
     else if (top == '*') {
-      //if the top node of the input queue is a '*', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
-      if (operatorStack->peek(operatorStackHead) != '(' || operatorStack->peek(operatorStackHead) != ')' || operatorStack->peek(operatorStackHead) != '^'){
-	while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '+' || operatorStack->peek(operatorStackHead) != '-') {
-	  //if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
-	  operatorStack->pop(operatorStackHead);
-	}
-	//push the '+' sign to cleaned off operator stack
-	operatorStack->push(operatorStackHead, top);
+      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '+' || operatorStack->peek(operatorStackHead) != '-'|| operatorStack->peek(operatorStackHead) != '(') {
+	//if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
+	outputQueue->enqueue(outputHead, operatorStack->pop(operatorStackHead));
+	operatorStack->deleteHead(operatorStackHead);
       }
-
-      else {
-	operatorStack->push(operatorStackHead, top);
-      }
+      //push the '+' sign to cleaned off operator stack
+      operatorStack->push(operatorStackHead, top);
     }
 
     else if (top == '/') {
-      //if the top node of the input queue is a '*', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
-      if (operatorStack->peek(operatorStackHead) != '(' || operatorStack->peek(operatorStackHead) != ')' || operatorStack->peek(operatorStackHead) != '^'){
-	while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '+' || operatorStack->peek(operatorStackHead) != '-') {
-	  //if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
-	  operatorStack->pop(operatorStackHead);
-	}
-	//push the '+' sign to cleaned off operator stack
-	operatorStack->push(operatorStackHead, top);
+      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '+' || operatorStack->peek(operatorStackHead) != '-'|| operatorStack->peek(operatorStackHead) != '(') {
+	//if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
+	outputQueue->enqueue(outputHead, operatorStack->pop(operatorStackHead));
+	operatorStack->deleteHead(operatorStackHead);
       }
+      //push the '+' sign to cleaned off operator stack
+      operatorStack->push(operatorStackHead, top);
       
-      else {
-	operatorStack->push(operatorStackHead, top);
-      }
     }
 
     else if (top == '(') {
@@ -170,9 +155,23 @@ void shuntingYard(char arr[100]) {
     }
 
     else if (top == ')') {
+      while (operatorStack->peek(operatorStackHead) != '(') {
+	outputQueue->enqueue(outputHead, operatorStack->pop(operatorStackHead));
+	operatorStack->deleteHead(operatorStackHead);
+      }
+      operatorStack->deleteHead(operatorStackHead);
+      delete top;
     }
 
     else if (top == '^') {
+      //if the top node of the input queue is a '^', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
+      if (operatorStack->peek(operatorStackHead) == '^') {
+	outputQueue->enqueue(outputHead, top);
+      }
+
+      else {
+	operatorStack->push(top);
+      }
     }
 
     else {
@@ -181,6 +180,8 @@ void shuntingYard(char arr[100]) {
     }
 
   }
+
+  outputQueue->print(outputHead);
   
   /*while there are tokens to be read:
     read a token
