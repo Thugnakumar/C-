@@ -13,19 +13,20 @@ This is the shunting yard algorithm. Update the description of this algorithm as
 
 using namespace std;
 
-void createStackNode(node * &head, stack * &stack);
-void createQueueNode(node * &head, queue * &queue);
+void createStackNode(node * &head, stack * &stack, char input);
+void createQueueNode(node * &head, queue * &queue, char input);
 void shuntingYard(char arr[100]);
 
 int main() {
 
-  stack * newStack = new stack();
-  queue * newQueue = new queue();
+  //  stack * newStack = new stack();
+  //queue * newQueue = new queue();
 
   char input [100];
   cout << "Enter an equation: ";
   cin >> input;
-  
+
+  shuntingYard(input);
   /*  createStackNode(head, newStack);
   createStackNode(head, newStack);
   createStackNode(head, newStack);
@@ -63,10 +64,10 @@ int main() {
   newQueue->dequeue(head);*/
 }
 
-void createStackNode(node * &head, stack * &stack){
+void createStackNode(node * &head, stack * &stack, char input){
   node * newNode = new node();
 
-  cin >> newNode->data;
+  newNode->data = input;
   newNode->next = NULL;
 
   stack->push(head,newNode);
@@ -74,10 +75,10 @@ void createStackNode(node * &head, stack * &stack){
   cout << endl;
 }
 
-void createQueueNode(node * &head, queue * &queue){
+void createQueueNode(node * &head, queue * &queue, char input){
   node * newNode = new node();
 
-  cin >> newNode->data;
+  newNode->data = input;
   newNode->next = NULL;
 
   queue->enqueue(head,newNode);
@@ -86,63 +87,73 @@ void createQueueNode(node * &head, queue * &queue){
 }
 
 void shuntingYard(char arr[100]) {
-
+  cout << "Entered Shunting Yard" << endl;
+  
   queue * inputQueue = new queue();
   queue * outputQueue = new queue();
   stack * operatorStack = new stack();
   node * inputHead = NULL;
   node * outputHead = NULL;
   node * operatorStackHead = NULL;
+  node * temp = NULL;
+
+  cout << "Created things" << endl;
   
   for (int i = 0; i < strlen(arr); ++i){
     if (arr[i] != ' '){
-      createQueueNode(inputHead, inputQueue);
+      createQueueNode(inputHead, inputQueue, arr[i]);
     }
   }
+  cout << "Removed spaces" << endl;
 
   while (inputQueue->isEmpty(inputHead) == false){
+    cout << "There's stuff in the queue" << endl;
     //while there's stuff in the input queue...
     node * top = inputQueue->dequeue(inputHead); //store the value of the top of the input stack to node "top"
     inputQueue->deleteHead(inputHead); //delete the head of the input queue and reset the head
-    if (top >= '0' && top <= '9'){
+    if (top->data >= '0' && top->data <= '9'){
       //if the top node of the input queue is a number, add it to the output queue
-      outputQueue->enqueue(top);
+      outputQueue->enqueue(outputHead, top);
     }
 
-    else if (top == '+') {
-      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '(') {
+    else if (top->data == '+') {
+      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead)->data != '(') {
 	//if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
-	outputQueue->enqueue(outputHead, operatorStack->pop(operatorStackHead));
+	temp = operatorStack->pop(operatorStackHead);
+	outputQueue->enqueue(outputHead, temp);
 	operatorStack->deleteHead(operatorStackHead);
       }
       //push the '+' sign to cleaned off operator stack
       operatorStack->push(operatorStackHead, top);
     }
 
-    else if (top == '-') {
-      while (operatorStack->peek(operatorStackHead) != NULL|| operatorStack->peek(operatorStackHead) != '(') {
+    else if (top->data == '-') {
+      while (operatorStack->peek(operatorStackHead) != NULL|| operatorStack->peek(operatorStackHead)->data != '(') {
 	//if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
-	outputQueue->enqueue(operatorStack->pop(operatorStackHead));
+	temp = operatorStack->pop(operatorStackHead);
+	outputQueue->enqueue(outputHead, temp);
 	operatorStack->deleteHead(operatorStackHead);
       }
       //push the '+' sign to cleaned off operator stack
       operatorStack->push(operatorStackHead, top);
     }
 
-    else if (top == '*') {
-      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '+' || operatorStack->peek(operatorStackHead) != '-'|| operatorStack->peek(operatorStackHead) != '(') {
+    else if (top->data == '*') {
+      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead)->data != '+' || operatorStack->peek(operatorStackHead)->data != '-'|| operatorStack->peek(operatorStackHead)->data != '(') {
 	//if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
-	outputQueue->enqueue(outputHead, operatorStack->pop(operatorStackHead));
+	temp = operatorStack->pop(operatorStackHead);	
+	outputQueue->enqueue(outputHead, temp);
 	operatorStack->deleteHead(operatorStackHead);
       }
       //push the '+' sign to cleaned off operator stack
       operatorStack->push(operatorStackHead, top);
     }
 
-    else if (top == '/') {
-      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead) != '+' || operatorStack->peek(operatorStackHead) != '-'|| operatorStack->peek(operatorStackHead) != '(') {
+    else if (top->data == '/') {
+      while (operatorStack->peek(operatorStackHead) != NULL || operatorStack->peek(operatorStackHead)->data != '+' || operatorStack->peek(operatorStackHead)->data != '-'|| operatorStack->peek(operatorStackHead)->data != '(') {
 	//if the top node of the operator stack is higher or same precedence than '+', then pop all operators off the stack until the stack is clean
-	outputQueue->enqueue(outputHead, operatorStack->pop(operatorStackHead));
+	temp = operatorStack->pop(operatorStackHead);	
+	outputQueue->enqueue(outputHead, temp);
 	operatorStack->deleteHead(operatorStackHead);
       }
       //push the '+' sign to cleaned off operator stack
@@ -150,27 +161,28 @@ void shuntingYard(char arr[100]) {
       
     }
 
-    else if (top == '(') {
+    else if (top->data == '(') {
       operatorStack->push(operatorStackHead, top);
     }
 
-    else if (top == ')') {
-      while (operatorStack->peek(operatorStackHead) != '(') {
-	outputQueue->enqueue(outputHead, operatorStack->pop(operatorStackHead));
+    else if (top->data == ')') {
+      while (operatorStack->peek(operatorStackHead)->data != '(') {
+	temp = operatorStack->pop(operatorStackHead);
+	outputQueue->enqueue(outputHead, temp);
 	operatorStack->deleteHead(operatorStackHead);
       }
       operatorStack->deleteHead(operatorStackHead);
       delete top;
     }
 
-    else if (top == '^') {
+    else if (top->data == '^') {
       //if the top node of the input queue is a '^', add it to the output stack provided that the top node of the output stack isn't an operator of higher precedence (excluding parentheses)
-      if (operatorStack->peek(operatorStackHead) == '^') {
+      if (operatorStack->peek(operatorStackHead)->data == '^') {
 	outputQueue->enqueue(outputHead, top);
       }
 
       else {
-	operatorStack->push(top);
+	operatorStack->push(outputHead, top);
       }
     }
 

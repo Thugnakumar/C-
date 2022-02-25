@@ -23,7 +23,7 @@ bool stack::push(node * &head, node * node){
 
 node* stack::pop(node * &head){
   if (head != NULL) {
-      return current;
+      return head;
   }
 
   else {
@@ -36,7 +36,7 @@ node* stack::peek(node * head){
   return head;
 }
 
-void deleteHead(node* &head){
+void stack::deleteHead(node* &head){
   node * current = head;  
   head = head->next;
   delete current;

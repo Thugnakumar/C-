@@ -16,7 +16,7 @@ class queue {
  public:
   queue();
   ~queue();
-  bool enqueue(node * &head, node * &node);
+  bool enqueue(node * &head, node * &myNode);
   node* dequeue(node * &head);
   bool isEmpty(node * head);
   void deleteHead(node * &head);

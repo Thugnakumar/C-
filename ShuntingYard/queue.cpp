@@ -29,7 +29,7 @@ node* queue::dequeue(node * &head){
   //returns the node at the front end of the queue
 
   if (head != NULL) {
-    return current;
+    return head;
   }
 
   else {
@@ -40,9 +40,9 @@ node* queue::dequeue(node * &head){
 
 bool queue::isEmpty(node * head) {
   if (head == NULL){
-    return false;
+    return true;
   }
-  return true;
+  return false;
 }
 
 void queue::deleteHead(node * &head) {
