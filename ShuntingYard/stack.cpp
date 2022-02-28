@@ -13,7 +13,7 @@ bool stack::push(node * &head, node * node){
     head = node;
   }
   
-  if (node != head){
+  else {
     node->next = head;
     head = node;
   }
@@ -23,7 +23,10 @@ bool stack::push(node * &head, node * node){
 
 node* stack::pop(node * &head){
   if (head != NULL) {
-      return head;
+    node * retNode = head;
+    head = retNode->next;
+    retNode->next = NULL;
+    return retNode;
   }
 
   else {
@@ -43,7 +46,7 @@ void stack::deleteHead(node* &head){
 }
 
 void stack::print(node * head){
-  while (head->data != '\0'){
+  while (head != NULL){
     cout << head->data;
     head = head->next;
   }

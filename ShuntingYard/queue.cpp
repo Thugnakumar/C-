@@ -29,7 +29,10 @@ node* queue::dequeue(node * &head){
   //returns the node at the front end of the queue
 
   if (head != NULL) {
-    return head;
+    node * retNode = head;
+    head = retNode->next;
+    retNode->next = NULL;
+    return retNode;
   }
 
   else {
