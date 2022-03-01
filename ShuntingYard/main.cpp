@@ -10,35 +10,27 @@ This is the shunting yard algorithm. Update the description of this algorithm as
 #include "stack.h"
 #include "node.h"
 #include "queue.h"
+#include "bnode.h"
+#include "btree.h"
 
 using namespace std;
 
-void createStackNode(node * &head, stack * &stack, char input);
 void createQueueNode(node * &head, queue * &queue, char input);
-void shuntingYard(char * arr, queue * &outputQueue);
+void shuntingYard(char * arr, queue * &outputQueue, node * &outputHead);
+void binaryTree( node * oqHead, queue * outputQueue);
 
 int main() {
 
-  //  stack * newStack = new stack();
   queue * outputQueue = new queue();  
-  
+  node * outputHead = NULL;
+    
   char input[100];
   cout << "Enter an equation: ";
   cin.getline(input, 100);
   cout << input << endl;
   
-  shuntingYard(input, outputQueue);
-}
-
-void createStackNode(node * &head, stack * &stack, char input){
-  node * newNode = new node();
-
-  newNode->data = input;
-  newNode->next = NULL;
-
-  stack->push(head,newNode);
-  stack->print(head);
-  cout << endl;
+  shuntingYard(input, outputQueue, outputHead);
+  binaryTree(outputHead, outputQueue);
 }
 
 void createQueueNode(node * &head, queue * &queue, char input){
@@ -53,13 +45,12 @@ void createQueueNode(node * &head, queue * &queue, char input){
   //cout << "Made a node" << endl;
 }
 
-void shuntingYard(char * arr) {
+void shuntingYard(char * arr, queue * &outputQueue, node * &outputHead) {
   cout << "Entered Shunting Yard" << endl;
-  
+
   queue * inputQueue = new queue();
   stack * operatorStack = new stack();
   node * inputHead = NULL;
-  node * outputHead = NULL;
   node * operatorStackHead = NULL;
   node * temp = NULL;
   node * top = NULL;
@@ -208,4 +199,49 @@ void shuntingYard(char * arr) {
   }
 
   outputQueue->print(outputHead);  
+}
+
+void binaryTree( node * oqHead, queue * outputQueue) {
+  char notation[20] = "monkey";
+  btree * tree = new btree(outputQueue, oqHead);
+  while (strcmp(notation, "quit") != 0){
+    cout << "What notation would you like to view this in? (Infix, Prefix, Postfix). Type 'Quit' to quit: ";
+    cin >> notation;
+    for (int i = 0; i < strlen(notation); ++i){
+      notation[i] = toupper(notation[i]);
+    }
+
+    if (strcmp(notation, "INFIX") == 0){
+      //print in infix notation
+    }
+
+    else if (strcmp(notation, "PREFIX") == 0){
+      //print in prefix notation
+    }
+
+    else if (strcmp(notation, "POSTFIX") == 0){
+      //print in postfix notation
+    }
+
+    else {
+      cout << "Not a valid input!" << endl;
+      break;
+    }
+  }
+}
+
+void prefixNotation(bnode * treeNode) {
+  if (treeNode != NULL){
+    cout << treeNode->data;
+    prefixNotation(treeNode->left);
+    prefixNotation(treeNode->right);
+  }
+}
+
+void postfixNotation(bnode * treeNode){
+  if (treeNode != NULL) {
+    postfixNotation(treeNode->left);
+    postfixNotation(treeNode->right);
+    cout << treeNode->data;
+  }
 }

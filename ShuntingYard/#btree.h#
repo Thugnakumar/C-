@@ -19,6 +19,7 @@ class btree {
  public:
   btree(queue * outputQueue, node * oqHead);
   ~btree();
+  bnode * returnRoot();
 
  private:
   stack * treePtr = new stack();

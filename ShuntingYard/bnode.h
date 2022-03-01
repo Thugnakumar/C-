@@ -3,7 +3,7 @@
 struct bnode {
   char data;
   node * left;
-  node * right
+  node * right;
 };
 
 #endif

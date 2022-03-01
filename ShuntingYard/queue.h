@@ -19,6 +19,7 @@ class queue {
   bool enqueue(node * &head, node * &myNode);
   node* dequeue(node * &head);
   bool isEmpty(node * head);
+  node * returnHead(node * head);
   void print(node * head);
 
  private:
