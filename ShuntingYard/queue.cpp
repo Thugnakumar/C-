@@ -48,24 +48,15 @@ bool queue::isEmpty(node * head) {
   return false;
 }
 
-void queue::deleteHead(node * &head) {
-  node * current = head;
-
-  if (head != NULL) {
-    head = current->next;
-    delete current;
-  }
-
-  else {
-    cout << "There's nothing in the queue!" << endl;
-  }
-}
-
 void queue::print(node * head){
   while (head != NULL){
     cout << head->data;
     head = head->next;
   }
+}
+
+node * queue::returnHead (node * head) {
+  return head;
 }
 
 queue::~queue(){

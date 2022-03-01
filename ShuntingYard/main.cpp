@@ -15,54 +15,19 @@ using namespace std;
 
 void createStackNode(node * &head, stack * &stack, char input);
 void createQueueNode(node * &head, queue * &queue, char input);
-void shuntingYard(char * arr);
+void shuntingYard(char * arr, queue * &outputQueue);
 
 int main() {
 
   //  stack * newStack = new stack();
-  //queue * newQueue = new queue();
-
+  queue * outputQueue = new queue();  
+  
   char input[100];
   cout << "Enter an equation: ";
   cin.getline(input, 100);
   cout << input << endl;
   
-  shuntingYard(input);
-  /*  createStackNode(head, newStack);
-  createStackNode(head, newStack);
-  createStackNode(head, newStack);
-
-  newStack->pop(head, head);
-  newStack->print(head); createQueueNode(inputHead,
-  cout << endl;
-  newStack->pop(head, head);
-  newStack->print(head);
-  cout << endl;
-  newStack->pop(head, head);
-  newStack->print(head);
-  cout << endl;
-  */
-
-  /*createQueueNode(head, newQueue);
-  createQueueNode(head, newQueue);
-  createQueueNode(head, newQueue);
-
-  newQueue->dequeue(head);
-  cout << "Current order of nodes: ";
-  newQueue->print(head);
-  cout << endl;
-  cout << "dequeued" << endl;
-  newQueue->dequeue(head);
-  cout << "Current order of nodes: ";
-  newQueue->print(head);
-  cout << endl;  
-  cout << "dequeued" << endl;
-  newQueue->dequeue(head);
-  cout << "Current order of nodes: ";
-  newQueue->print(head);
-  cout << endl;
-  cout << "dequeued" << endl;
-  newQueue->dequeue(head);*/
+  shuntingYard(input, outputQueue);
 }
 
 void createStackNode(node * &head, stack * &stack, char input){
@@ -92,7 +57,6 @@ void shuntingYard(char * arr) {
   cout << "Entered Shunting Yard" << endl;
   
   queue * inputQueue = new queue();
-  queue * outputQueue = new queue();
   stack * operatorStack = new stack();
   node * inputHead = NULL;
   node * outputHead = NULL;

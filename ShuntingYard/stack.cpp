@@ -39,12 +39,6 @@ node* stack::peek(node * head){
   return head;
 }
 
-void stack::deleteHead(node* &head){
-  node * current = head;  
-  head = head->next;
-  delete current;
-}
-
 void stack::print(node * head){
   while (head != NULL){
     cout << head->data;
