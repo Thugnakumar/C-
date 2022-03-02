@@ -1,7 +1,7 @@
 /*
 Name: Varun Krishnakumar
-Date: 2/11/22
-This is the header file for the queue. This has 3 main classes (apart from the constructor and destructor): enqueue, dequeue, and print.
+Date: 3/1/22
+This is the header file for the queue. This has 4 main classes (apart from the constructor and destructor): enqueue, dequeue, and returnHead.
  */
 
 #ifndef QUEUE_H
@@ -20,7 +20,6 @@ class queue {
   node* dequeue(node * &head);
   bool isEmpty(node * head);
   node * returnHead(node * head);
-  void print(node * head);
 
  private:
 };
