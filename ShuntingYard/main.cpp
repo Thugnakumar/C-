@@ -214,6 +214,12 @@ bool shuntingYard(char * arr, queue * &outputQueue, node * &outputHead) {
 
   while (operatorStack->peek(operatorStackHead) != NULL) {
     //while there are things remaining in the output stack after finishing reading things from the input queue, keep popping those nodes from the top of the operator stack and adding them to the end of the output queue
+    if (operatorStack->peek(operatorStackHead) == '(') {
+      //if there's a '(' character reamining in the stack after everything has been read from the input queue, that means that the user never inputted a ')', so there are mismatch parentheses
+      cout << "Mismatched parentheses!" << endl;
+      return false;
+    }
+    
     temp = operatorStack->pop(operatorStackHead);
     outputQueue->enqueue(outputHead, temp);
   }
