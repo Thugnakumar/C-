@@ -22,11 +22,15 @@ struct node {
   node * next;
 };
 
-void add(node * &hashTable, int &tableSize);
+int hashFunction(node * student, int tableSize);
+void createStudent(node * &hashTable, int &tableSize);
+void insert(node * student, node * &hashTable, int tableSize);
+void rehash(node * &hashTable, int &tableSize);
 
 int main(){
   int size = 100;
-  node hashTable[size];
+  node hashTable[100];
+
 
   for (i = 0; i < size; ++i) {
     hashTable[i] = '\0';
@@ -78,10 +82,14 @@ int main(){
    return 0;
 }
 
-void add(node * &hashTable, int &tableSize){
+int hashFunction(int tableSize, node * student) {
+  return student->id % tableSize;
+}
+
+void createStudent(node * &hashTable, int &tableSize){
+  //replace with random student generator code
   //passes the vector in by reference and prompts the user to input all of the parameters that make up a student (as defined by the s \truct at the top)
   node * newStudent = new student();
-  node * current = NULL;
   cout << "Enter the student's first name: ";
   cin >> newStudent->firstName;
   cout << endl << "Enter the student's last name: ";
@@ -92,22 +100,52 @@ void add(node * &hashTable, int &tableSize){
   cin >> newStudent->gpa;
   newStudent->gpa = round(newStudent->gpa * 100)/100;
   newStudent->next = NULL;
-  int arraySlot = newStudent->id % 100;
+}
+
+void insert(node * student, node * &hashTable, int tableSize) {
+  node * current = NULL;
+  int arraySlot = hashFunction(student, tableSize);
   if (hashTable[arraySlot] != '\0') {
     current = hashTable[arraySlot];
-    int collisionCount = 0;
-    while (current != NULL) {
+    int collisionCount = 1;
+    while (current->next != NULL) {
       collisionCount++;
       current = current->next;
     }
     
-    if (collisionCount >= 2) {
-      //call the rehash function if there are more than 2 nodes in one array index
+    if (collisionCount > 3) {
+      //call the rehash function if there are more than 3 nodes in one array index
     }
 
     else {
-      current->next = newStudent;
+      current->next = student;
     }
   }
+
+  else {
+    hashTable[arraySlot] = student;
+    head = student;
+  }
   cout << "New student added!" << endl; //prints a confirmation message when a student is successfully added
+}
+
+void rehash(node * &hashTable, int &tableSize) {
+  tableSize = tableSize * 2;
+
+  node newHashTable[tableSize];
+  
+  cout << "Size of the hash table is now: " << sizeof(newHashTable);
+
+  for (int i = 0; i < sizeof(newHashTable); ++i) {
+    newHashTable[i] = '\0';
+  }
+  
+  for (int i = 0; i < sizeof(hashTable); ++i) {
+    if (hashTable[i] != '\0') {
+      arraySlot = hashFunction(hashTable[i], tableSize);
+      newHashTable[arraySlot] = hashTable[i];
+      hashTable[i] = newHashTable[arraySlot]->next;
+      
+    }
+  }
 }
