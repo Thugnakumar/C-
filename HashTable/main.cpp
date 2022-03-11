@@ -34,7 +34,7 @@ int main(){
 
 
   for (int i = 0; i < size; ++i) {
-    hashTable[i] = '\0';
+    hashTable[i] = NULL;
   }
   
   while (true) {//keeps running forever
@@ -86,7 +86,7 @@ int hashFunction(int tableSize, node * student) {
 void createStudent(node * &hashTable, int &tableSize){
   //replace with random student generator code
   //passes the vector in by reference and prompts the user to input all of the parameters that make up a student (as defined by the s \truct at the top)
-  student * newStudent = new student();
+  node * newStudent = new node();
   cout << "Enter the student's first name: ";
   cin >> newStudent->firstName;
   cout << endl << "Enter the student's last name: ";
@@ -103,8 +103,9 @@ void createStudent(node * &hashTable, int &tableSize){
 void insert(node * student, node * &hashTable, int tableSize) {
   node * current = NULL;
   int arraySlot = hashFunction(student, tableSize);
-  if (hashTable[arraySlot] != '\0') {
-    current = hashTable[arraySlot];
+  node * inputSlot = &(hashTable[arraySlot]);
+  if (inputSlot != NULL) {
+    current = inputSlot;
     int collisionCount = 1;
     while (current->next != NULL) {
       collisionCount++;
@@ -113,6 +114,7 @@ void insert(node * student, node * &hashTable, int tableSize) {
     
     if (collisionCount > 3) {
       //call the rehash function if there are more than 3 nodes in one array index
+      rehash(hashTable, tableSize);
     }
 
     else {
@@ -121,8 +123,7 @@ void insert(node * student, node * &hashTable, int tableSize) {
   }
 
   else {
-    hashTable[arraySlot] = student;
-    head = student;
+    inputSlot = student;
   }
   cout << "New student added!" << endl; //prints a confirmation message when a student is successfully added
 }
@@ -134,21 +135,24 @@ void rehash(node * &hashTable, int &tableSize) {
 
   node * current = NULL; //node with no value for going through a linked list
 
+  node * temp = NULL;
+
   bool needToRehash = false;//bool that checks if we need to rehash again
   
   cout << "Size of the hash table is now: " << sizeof(newHashTable);
 
   for (int i = 0; i < sizeof(newHashTable); ++i) {
     //sets all of the indices within the new array to the null character
-    newHashTable[i] = '\0';
+    newHashTable[i] = NULL;
   }
   
   for (int i = 0; i < sizeof(hashTable); ++i) {
     //iterates through each index of the old array
-    if (hashTable[i] != '\0') {
+    temp = hashTable[i];
+    if (temp != NULL) {
       //if the current index is not a null character (has a node), then checks to see what index it should go in in the new array
-      arraySlot = hashFunction(hashTable[i], tableSize);
-      if (newHashTable[arraySlot] != '\0') {
+      int arraySlot = hashFunction(temp, tableSize);
+      if (newHashTable[arraySlot] != NULL) {
 	//if that index in the new array already has a node, go through the linked list to see if that linked list has 3+ elements. If so, make a not to rehash the table and continue transferring data, otherwise just add the node to the end of the linked list
 	current = newHashTable[arraySlot];
 	int collisionCount = 1;
@@ -161,24 +165,16 @@ void rehash(node * &hashTable, int &tableSize) {
 	  needToRehash = true;
 	}
 
-	else {
-	  current->next = hashTable[i];
-	  hashTable[i] = current->next->next;
-	  current->next->next = NULL;
-	  if (hashTable[i] == NULL) {
-	    hashTable[i] = '\0';
-	  }
-	}
+	current->next = temp;
+	temp = current->next->next;
+	current->next->next = NULL;
       }
 
       else {
 	//if that new array index is empty, transfer the node from the previous array to this new array index. If there's now nothing in that slot in the old array, then set that array slot to be the null character
-	newHashTable[arraySlot] = hashTable[i];
-	hashTable[i] = newHashTable[arraySlot]->next;
+	newHashTable[arraySlot] = temp;
+	temp = newHashTable[arraySlot]->next;
 	newHashTable[arraySlot]->next = NULL;
-	if (hashTable[i] == NULL) {
-	  hashTable[i] = '\0';
-	}
       }
     }
   }
