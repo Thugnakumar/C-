@@ -28,11 +28,12 @@ void insert(node * student, node * &hashTable, int tableSize);
 void rehash(node * &hashTable, int &tableSize);
 
 int main(){
+  char input[20];
   int size = 100;
-  node hashTable[100];
+  node * hashTable[100];
 
 
-  for (i = 0; i < size; ++i) {
+  for (int i = 0; i < size; ++i) {
     hashTable[i] = '\0';
   }
   
@@ -48,22 +49,18 @@ int main(){
 
     if (strcmp(input, "ADD") == 0){
       //resorts to the add function if the user types "add"
-      add(list);
     }
 
     else if (strcmp(input, "DELETE") == 0){
       //refers to the remove function if the user types "remove"
-      remove(list);
     }
 
     else if (strcmp(input, "CLEAR") == 0){
       //clears the vector if the user types "clear"
-      list.clear();
     }
 
     else if (strcmp(input, "PRINT") == 0){
       //refers to the print function if the user types print
-      print(list);
     }
     
     else if (strcmp(input, "QUIT") == 0){
@@ -89,7 +86,7 @@ int hashFunction(int tableSize, node * student) {
 void createStudent(node * &hashTable, int &tableSize){
   //replace with random student generator code
   //passes the vector in by reference and prompts the user to input all of the parameters that make up a student (as defined by the s \truct at the top)
-  node * newStudent = new student();
+  student * newStudent = new student();
   cout << "Enter the student's first name: ";
   cin >> newStudent->firstName;
   cout << endl << "Enter the student's last name: ";
@@ -100,6 +97,7 @@ void createStudent(node * &hashTable, int &tableSize){
   cin >> newStudent->gpa;
   newStudent->gpa = round(newStudent->gpa * 100)/100;
   newStudent->next = NULL;
+  insert(newStudent, hashTable, tableSize);
 }
 
 void insert(node * student, node * &hashTable, int tableSize) {
@@ -130,22 +128,64 @@ void insert(node * student, node * &hashTable, int tableSize) {
 }
 
 void rehash(node * &hashTable, int &tableSize) {
-  tableSize = tableSize * 2;
+  tableSize = tableSize * 2; //doubles the table size for rehashing
 
-  node newHashTable[tableSize];
+  node * newHashTable[tableSize]; //creates a new array with that table size
+
+  node * current = NULL; //node with no value for going through a linked list
+
+  bool needToRehash = false;//bool that checks if we need to rehash again
   
   cout << "Size of the hash table is now: " << sizeof(newHashTable);
 
   for (int i = 0; i < sizeof(newHashTable); ++i) {
+    //sets all of the indices within the new array to the null character
     newHashTable[i] = '\0';
   }
   
   for (int i = 0; i < sizeof(hashTable); ++i) {
+    //iterates through each index of the old array
     if (hashTable[i] != '\0') {
+      //if the current index is not a null character (has a node), then checks to see what index it should go in in the new array
       arraySlot = hashFunction(hashTable[i], tableSize);
-      newHashTable[arraySlot] = hashTable[i];
-      hashTable[i] = newHashTable[arraySlot]->next;
-      
+      if (newHashTable[arraySlot] != '\0') {
+	//if that index in the new array already has a node, go through the linked list to see if that linked list has 3+ elements. If so, make a not to rehash the table and continue transferring data, otherwise just add the node to the end of the linked list
+	current = newHashTable[arraySlot];
+	int collisionCount = 1;
+	while (current->next != NULL) {
+	  collisionCount++;
+	  current = current->next;
+	}
+
+	if (collisionCount >= 3) {
+	  needToRehash = true;
+	}
+
+	else {
+	  current->next = hashTable[i];
+	  hashTable[i] = current->next->next;
+	  current->next->next = NULL;
+	  if (hashTable[i] == NULL) {
+	    hashTable[i] = '\0';
+	  }
+	}
+      }
+
+      else {
+	//if that new array index is empty, transfer the node from the previous array to this new array index. If there's now nothing in that slot in the old array, then set that array slot to be the null character
+	newHashTable[arraySlot] = hashTable[i];
+	hashTable[i] = newHashTable[arraySlot]->next;
+	newHashTable[arraySlot]->next = NULL;
+	if (hashTable[i] == NULL) {
+	  hashTable[i] = '\0';
+	}
+      }
     }
+  }
+
+  hashTable = newHashTable;
+  
+  if (needToRehash == true) {
+    rehash(newHashTable, tableSize);
   }
 }
