@@ -10,6 +10,7 @@ This is the Hash Table project. It allows users to input a first and last name, 
 #include <cstring>
 #include <math.h>
 #include <iomanip>
+#include <random>
 
 using namespace std;
 
@@ -23,14 +24,14 @@ struct node {
 };
 
 int hashFunction(node * student, int tableSize);
-void createStudent(node * &hashTable, int &tableSize);
-void insert(node * student, node * &hashTable, int tableSize);
-void rehash(node * &hashTable, int &tableSize);
+void createStudent(node ** hashTable, int &tableSize);
+void insert(node * student, node ** hashTable, int tableSize);
+void rehash(node ** hashTable, int &tableSize);
 
 int main(){
   char input[20];
   int size = 100;
-  node * hashTable[100];
+  node ** hashTable = new node * [size];
 
 
   for (int i = 0; i < size; ++i) {
@@ -49,6 +50,7 @@ int main(){
 
     if (strcmp(input, "ADD") == 0){
       //resorts to the add function if the user types "add"
+      createStudent(hashTable, size);
     }
 
     else if (strcmp(input, "DELETE") == 0){
@@ -79,11 +81,11 @@ int main(){
    return 0;
 }
 
-int hashFunction(int tableSize, node * student) {
+int hashFunction(node * student, int tableSize) {
   return student->id % tableSize;
 }
 
-void createStudent(node * &hashTable, int &tableSize){
+void createStudent(node ** hashTable, int &tableSize){
   //replace with random student generator code
   //passes the vector in by reference and prompts the user to input all of the parameters that make up a student (as defined by the s \truct at the top)
   node * newStudent = new node();
@@ -100,12 +102,19 @@ void createStudent(node * &hashTable, int &tableSize){
   insert(newStudent, hashTable, tableSize);
 }
 
-void insert(node * student, node * &hashTable, int tableSize) {
+void insert(node * student, node ** hashTable, int tableSize) {
+  cout << "Entered insert!" << endl;
   node * current = NULL;
+  cout << "Current is NULL" << endl;
+  bool needToRehash = false;
+  cout << "Boolean create" << endl;
   int arraySlot = hashFunction(student, tableSize);
-  node * inputSlot = &(hashTable[arraySlot]);
-  if (inputSlot != NULL) {
-    current = inputSlot;
+  cout << "Array slot: " << arraySlot << endl;
+  cout << "Located the slot on the hash table where I should insert" << endl;
+  if (hashTable[arraySlot] != NULL) {
+    cout << "Inputting into an empty array slot" << endl;
+    current = hashTable[arraySlot];
+    cout << "Set the current node to be the value of the input slot" << endl;
     int collisionCount = 1;
     while (current->next != NULL) {
       collisionCount++;
@@ -113,8 +122,9 @@ void insert(node * student, node * &hashTable, int tableSize) {
     }
     
     if (collisionCount > 3) {
-      //call the rehash function if there are more than 3 nodes in one array index
-      rehash(hashTable, tableSize);
+      //set the next node in the linked list to be the student and then call the rehash function if there are more than 3 nodes in one array index
+      current->next = student;
+      needToRehash = true;
     }
 
     else {
@@ -123,25 +133,43 @@ void insert(node * student, node * &hashTable, int tableSize) {
   }
 
   else {
-    inputSlot = student;
+    //if the current slot is empty, put that student in the empty slot
+    cout << "Adding student to empty slot" << endl;
+    hashTable[arraySlot] = student;
+    cout << "Added student!" << endl;
   }
+
   cout << "New student added!" << endl; //prints a confirmation message when a student is successfully added
+
+  while (current != NULL) {
+    cout << "Name: " << current->firstName << " " << current->lastName << '\n' << "ID: " << current->id << '\t' << "GPA: " << current->gpa << endl;
+    current = current->next;
+  }
+  
+  if (needToRehash == true) {
+    rehash(hashTable, tableSize);
+    cout << "Size of new hash table is: " << sizeof(hashTable);
+  }
 }
 
-void rehash(node * &hashTable, int &tableSize) {
+void rehash(node ** hashTable, int &tableSize) {
+  cout << "Entered rehash" << endl;
   tableSize = tableSize * 2; //doubles the table size for rehashing
+  cout << "Doubled table size" << endl;
 
   node * newHashTable[tableSize]; //creates a new array with that table size
+  cout << "created new table" << endl;
 
   node * current = NULL; //node with no value for going through a linked list
+  cout << "Made new node current" << endl;
 
   node * temp = NULL;
+  cout << "Made new node temp" << endl;
 
   bool needToRehash = false;//bool that checks if we need to rehash again
-  
-  cout << "Size of the hash table is now: " << sizeof(newHashTable);
+  cout << "Made bool" << endl;  
 
-  for (int i = 0; i < sizeof(newHashTable); ++i) {
+  for (int i = 0; i < tableSize; ++i) {
     //sets all of the indices within the new array to the null character
     newHashTable[i] = NULL;
   }
