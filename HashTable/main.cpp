@@ -153,49 +153,49 @@ void insert(node * student, node ** hashTable, int tableSize) {
 }
 
 void rehash(node ** hashTable, int &tableSize) {
-  cout << "Entered rehash" << endl;
   tableSize = tableSize * 2; //doubles the table size for rehashing
-  cout << "Doubled table size" << endl;
 
   node * newHashTable[tableSize]; //creates a new array with that table size
-  cout << "created new table" << endl;
 
   node * current = NULL; //node with no value for going through a linked list
-  cout << "Made new node current" << endl;
 
   node * temp = NULL;
-  cout << "Made new node temp" << endl;
 
   bool needToRehash = false;//bool that checks if we need to rehash again
-  cout << "Made bool" << endl;  
 
   for (int i = 0; i < tableSize; ++i) {
     //sets all of the indices within the new array to the null character
     newHashTable[i] = NULL;
   }
+
+  cout << "Size of table is now: " << tableSize << endl;
   
-  for (int i = 0; i < sizeof(hashTable); ++i) {
+  for (int i = 0; i < tableSize/2; ++i) {
     //iterates through each index of the old array
     temp = hashTable[i];
     if (temp != NULL) {
+      cout << "There is a node in the " << i << " index of the array" << endl;
       //if the current index is not a null character (has a node), then checks to see what index it should go in in the new array
       int arraySlot = hashFunction(temp, tableSize);
+      cout << "This node should go in the " << arraySlot << " index of the new array" << endl;
       if (newHashTable[arraySlot] != NULL) {
-	//if that index in the new array already has a node, go through the linked list to see if that linked list has 3+ elements. If so, make a not to rehash the table and continue transferring data, otherwise just add the node to the end of the linked list
+	cout << "There is a node in the " << arraySlot << " index of the new array" << endl;
+	//if that index in the new array already has a node, go through the linked list to see if that linked list has 3+ elements. If so, make a note to rehash the table and continue transferring data, otherwise just add the node to the end of the linked list
 	current = newHashTable[arraySlot];
-	int collisionCount = 1;
-	while (current->next != NULL) {
+	int collisionCount = 0;
+	while (current != NULL) {
 	  collisionCount++;
 	  current = current->next;
 	}
 
 	if (collisionCount >= 3) {
 	  needToRehash = true;
+	  current = current->next;
 	}
 
 	current->next = temp;
-	temp = current->next->next;
-	current->next->next = NULL;
+	hashTable[i] = current->next->next;
+	temp->next = NULL;
       }
 
       else {
@@ -211,5 +211,19 @@ void rehash(node ** hashTable, int &tableSize) {
   
   if (needToRehash == true) {
     rehash(newHashTable, tableSize);
+  }
+
+  for (int i = 0; i < tableSize; ++i) {
+    cout << i << " " ;
+    if (newHashTable[i] != NULL) {
+      cout << "Array index: " << i << endl;
+      node * current = NULL;
+      current = newHashTable[i];
+      while (current != NULL) {
+	cout << "Name: " << current->firstName << " " << current->lastName << '\t' << "ID: " << current->id << '\t' << "GPA: " << current->gpa << endl;
+	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+	current = current->next;
+      }
+    }
   }
 }
