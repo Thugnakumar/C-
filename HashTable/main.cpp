@@ -10,7 +10,7 @@ This is the Hash Table project. It allows users to input a first and last name, 
 #include <cstring>
 #include <math.h>
 #include <iomanip>
-#include <random>
+#include <fstream>
 
 using namespace std;
 
@@ -24,14 +24,33 @@ struct node {
 };
 
 int hashFunction(node * student, int tableSize);
-void createStudent(node ** &hashTable, int &tableSize);
+void createStudent(node ** &hashTable, int &tableSize, char * firstName, char * lastName);
 void insert(node * student, node ** &hashTable, int &tableSize);
 void rehash(node ** &hashTable, int &tableSize);
 
 int main(){
+  srand(time(NULL));
+  
+  char firstNameOptions[1000][15];
+  ifstream firstName;
+  firstName.open("firstnames.txt");
+
+  for (int i = 0; i < 1000; ++i) {
+    firstName >> firstNameOptions[i];
+  }
+
+  char lastNameOptions[1000][15];
+  ifstream lastName;
+  lastName.open("lastnames.txt");
+
+  for (int i = 0; i < 1000; ++i) {
+    lastName >> lastNameOptions[i];
+  }
+
   char input[20];
   int size = 100;
   node ** hashTable = new node * [size];
+  int numStudents = 1;
 
 
   for (int i = 0; i < size; ++i) {
@@ -50,7 +69,17 @@ int main(){
 
     if (strcmp(input, "ADD") == 0){
       //resorts to the add function if the user types "add"
-      createStudent(hashTable, size);
+      cout << "How many students would you like to add? ";
+      cin >> numStudents;
+      if (numStudents > 0) {
+	for (int i = 0; i < numStudents; ++i) {
+	  createStudent(hashTable, size, firstNameOptions[rand() % 100], lastNameOptions[rand() % 100]);
+	}
+      }
+
+      else {
+	cout << "Not a valid input!" << endl;
+      }
     }
 
     else if (strcmp(input, "DELETE") == 0){
@@ -85,20 +114,33 @@ int hashFunction(node * student, int tableSize) {
   return student->id % tableSize;
 }
 
-void createStudent(node ** &hashTable, int &tableSize){
+void createStudent(node ** &hashTable, int &tableSize, char * firstName, char * lastName){
   //replace with random student generator code
   //passes the vector in by reference and prompts the user to input all of the parameters that make up a student (as defined by the s \truct at the top)
   node * newStudent = new node();
-  cout << "Enter the student's first name: ";
-  cin >> newStudent->firstName;
-  cout << endl << "Enter the student's last name: ";
-  cin >> newStudent->lastName;
-  cout << endl << "Enter the student's ID number: ";
-  cin >> newStudent->id;
-  cout << endl << "Enter the student's GPA: ";
-  cin >> newStudent->gpa;
-  newStudent->gpa = round(newStudent->gpa * 100)/100;
+  node * temp = NULL;
+  int id = -1;
+  int arraySlot = -1;
+  bool exists = false;
+  newStudent->firstName;
+  newStudent->lastName;
+  
+  while (id > 0 && exists == false) {
+    id = rand() % 89999+ 10000;
+    arraySlot = id % tableSize;
+    temp = hashTable[arraySlot];
+    while (temp != NULL) {
+      if (temp->id == id) {
+	exists = true;
+      }
+    }
+  }
+  newStudent->id = id;
+  newStudent->gpa = (rand() % 400 + 100) % 100;
   newStudent->next = NULL;
+  cout << "Name: " << newStudent->firstName << " " << newStudent->lastName << endl;
+  cout << "ID: " << newStudent->id << endl;
+  cout << "GPA: " << newStudent->gpa << endl;
   insert(newStudent, hashTable, tableSize);
 }
 
