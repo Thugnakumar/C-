@@ -1,9 +1,10 @@
 /*
 Date: 3/7/22
 Name: Varun Krishnakumar
-This is the Hash Table project. It allows users to input a first and last name, ID number, and GPA to create a student which is then stored in a node. Those nodes are then pushed into a specific array index; the index is derived by finding the modulus of the ID number and the size of the array. Upon insertion, the program checks to see how many nodes are in that particular array slot (collisions). If there are 3 nodes in that index, then the size of the table is changed and the indices of the nodes are altered according to the size of the table/array.
+This is the Hash Table project. It randomly generates a student with a first and last name, ID number, and GPA which is then stored in a node. Those nodes are then pushed into a specific array index; the index is derived by finding the modulus of the ID number and the size of the array. Upon insertion, the program checks to see how many nodes are in that particular array slot (collisions). If there are 3 nodes in that index, then the size of the table is changed and the indices of the nodes are altered according to the size of the table/array.
  */
 
+//all the libraries
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -16,21 +17,26 @@ using namespace std;
 
 struct node {
   //the blueprint for creating a new student struct
-  char firstName[20];
-  char lastName[20];
+  char * firstName;
+  char * lastName;
   int id;
   float gpa;
   node * next;
 };
 
-int hashFunction(node * student, int tableSize);
+//all the functions
+int hashFunction(int id, int tableSize);
 void createStudent(node ** &hashTable, int &tableSize, char * firstName, char * lastName);
 void insert(node * student, node ** &hashTable, int &tableSize);
+void print(int id, node ** &hashTable, int tableSize);
+void remove(int id, node ** &hashTable, int tableSize);
 void rehash(node ** &hashTable, int &tableSize);
 
 int main(){
+  //where all the stuff happens
   srand(time(NULL));
-  
+
+  //code for getting all the first names from the txt file here
   char firstNameOptions[1000][15];
   ifstream firstName;
   firstName.open("firstnames.txt");
@@ -39,6 +45,7 @@ int main(){
     firstName >> firstNameOptions[i];
   }
 
+  //code for getting all the last names from the txt files here
   char lastNameOptions[1000][15];
   ifstream lastName;
   lastName.open("lastnames.txt");
@@ -47,13 +54,14 @@ int main(){
     lastName >> lastNameOptions[i];
   }
 
-  char input[20];
-  int size = 100;
-  node ** hashTable = new node * [size];
-  int numStudents = 1;
+  char input[20]; //character array for taking command input from the user
+  int size = 100; //size of the hash table
+  node ** hashTable = new node * [size]; //THE HASH TABLE
+  int generalNum = -1; //general number for numerical stuff here in main
 
 
   for (int i = 0; i < size; ++i) {
+    //sets all values of the table to NULL
     hashTable[i] = NULL;
   }
   
@@ -68,30 +76,34 @@ int main(){
     }
 
     if (strcmp(input, "ADD") == 0){
-      //resorts to the add function if the user types "add"
+      //asks how many students the user wants to add and then generates that many random students and adds them to the hash table if the user types "add"
       cout << "How many students would you like to add? ";
-      cin >> numStudents;
-      if (numStudents > 0) {
-	for (int i = 0; i < numStudents; ++i) {
+      cin >> generalNum;
+      if (generalNum > 0) {
+	for (int i = 0; i < generalNum; ++i) {
 	  createStudent(hashTable, size, firstNameOptions[rand() % 100], lastNameOptions[rand() % 100]);
+	  cout << "Created student" << endl;
 	}
       }
 
       else {
+	//if the user's input is a non-positive integer, the following message prints
 	cout << "Not a valid input!" << endl;
       }
     }
 
     else if (strcmp(input, "DELETE") == 0){
-      //refers to the remove function if the user types "remove"
-    }
-
-    else if (strcmp(input, "CLEAR") == 0){
-      //clears the vector if the user types "clear"
+      //refers to the remove function if the user types "delete" after asking the user for the ID of the student to be deleted
+      cout << "Enter the ID of the student you wish to delete: ";
+      cin >> generalNum;
+      remove(generalNum, hashTable, size);
     }
 
     else if (strcmp(input, "PRINT") == 0){
-      //refers to the print function if the user types print
+      //refers to the print function if the user types "print" after asking the user for the ID of the student to be printed
+      cout << "Enter the ID of the student you want to print: ";
+      cin >> generalNum;
+      print(generalNum, hashTable, size);
     }
     
     else if (strcmp(input, "QUIT") == 0){
@@ -100,8 +112,7 @@ int main(){
     }
 
     else {
-      //if none of the above inputs are the same as what the user typed in, then it's an invalid command and the following message pr \
-      ints on the screen
+      //if none of the above inputs are the same as what the user typed in, then it's an invalid command and the following message prints on the screen
       cout << "Not a valid command!" << endl;
     }
    }
@@ -110,34 +121,39 @@ int main(){
    return 0;
 }
 
-int hashFunction(node * student, int tableSize) {
-  return student->id % tableSize;
+int hashFunction(int id, int tableSize) {
+  //hash function for determining slot of the array
+  return id % tableSize;
 }
 
 void createStudent(node ** &hashTable, int &tableSize, char * firstName, char * lastName){
-  //replace with random student generator code
-  //passes the vector in by reference and prompts the user to input all of the parameters that make up a student (as defined by the s \truct at the top)
+  //creates a new student pointer and randomizes the ID and GPA (names should be passed in)
   node * newStudent = new node();
-  node * temp = NULL;
-  int id = -1;
-  int arraySlot = -1;
+  int id = rand() % 89999 + 10000;
+  node * temp = hashTable[hashFunction(id, tableSize)];
   bool exists = false;
-  newStudent->firstName;
-  newStudent->lastName;
-  
-  while (id > 0 && exists == false) {
-    id = rand() % 89999+ 10000;
-    arraySlot = id % tableSize;
-    temp = hashTable[arraySlot];
+  newStudent->firstName = firstName;
+  newStudent->lastName = lastName;
+
+  do {
     while (temp != NULL) {
       if (temp->id == id) {
+	id = rand() % 89999 + 10000;
 	exists = true;
       }
+
+      else {
+	exists = false;
+      }
+      temp = temp->next;
     }
-  }
+  } while (exists == true);
+    
   newStudent->id = id;
-  newStudent->gpa = (rand() % 400 + 100) % 100;
+  newStudent->gpa = (rand() % 400 + 100) / 100;
   newStudent->next = NULL;
+
+  //prints the characteristics of the student as they are made
   cout << "Name: " << newStudent->firstName << " " << newStudent->lastName << endl;
   cout << "ID: " << newStudent->id << endl;
   cout << "GPA: " << newStudent->gpa << endl;
@@ -145,29 +161,29 @@ void createStudent(node ** &hashTable, int &tableSize, char * firstName, char * 
 }
 
 void insert(node * student, node ** &hashTable, int &tableSize) {
+  //function for adding the student to the hash table
   node * current = NULL;
 
-  bool needToRehash = false;
+  bool needToRehash = false; //boolean for checking whether or not we need to rehash
 
-  int arraySlot = hashFunction(student, tableSize);
+  int arraySlot = hashFunction(student->id, tableSize); //the slot at which the student should be inputted
 
   if (hashTable[arraySlot] != NULL) {
+    //if there's something in the array slot, then set "current" to be the first node in the array and declare a new int "collisionCount" to be 0
     current = hashTable[arraySlot];
-    int collisionCount = 1;
-    while (current->next != NULL) {
+    int collisionCount = 0;
+    while (current != NULL) {
+      //tracks the number of nodes in the array slot and increments collisionCount accordingly
       collisionCount++;
       current = current->next;
     }
     
     if (collisionCount > 3) {
       //set the next node in the linked list to be the student and then call the rehash function if there are more than 3 nodes in one array index
-      current->next = student;
       needToRehash = true;
     }
 
-    else {
-      current->next = student;
-    }
+    current->next = student;
   }
 
   else {
@@ -176,8 +192,73 @@ void insert(node * student, node ** &hashTable, int &tableSize) {
   }
   
   if (needToRehash == true) {
+    //if there are more than 3 collisions in an array slot, rehash the table
     rehash(hashTable, tableSize);
   }
+}
+
+void print(int id, node ** &hashTable, int tableSize) {
+  //prints the name, ID, and GPA of the student that the user specifies
+  int arraySlot = hashFunction(id, tableSize); //slot in the array where the student is located
+  bool exists = false; //boolean for checking if this student exists
+  node * temp = hashTable[arraySlot]; //temporary node pointer
+  while (temp != NULL) {
+    //while this array index isn't empty...
+    if (temp->id == id) {
+      //if this is the student that the user wants printed out, print out the student's info and set "exists" to true to show that the user exists
+      cout << "Name: " << temp->firstName << " " << temp->lastName << endl;
+      cout << "ID: " << temp->id << endl;
+      cout << "GPA: " << temp->gpa << endl;
+      exists = true;
+      break;
+    }
+    temp = temp->next; //keep traversing along the linked list
+  }
+
+  if (exists == false) {
+    //if the student doesn't exist, the following message prints
+    cout << "Student doesn't exist!" << endl;
+  }
+}
+void remove(int id, node ** &hashTable, int tableSize) {
+  //function to remove the a student specified by the user from the array
+  int arraySlot = hashFunction(id, tableSize); //slot in the array where the student is located
+  bool exists = false; //boolean for checking if this student exists
+  node * temp = hashTable[arraySlot]; //temporary node pointer
+  if (temp != NULL) {
+    //if the array slot where the student is supposed to exist isn't blank...
+    if (temp->id == id) {
+      //if the first node/student is the one that should be deleted, delete that student and set the next node in that index to be the first node in that array slot
+      hashTable[arraySlot] = temp->next;
+      delete temp;
+      exists = true;
+    }
+
+    else {
+      while (temp->next != NULL) {
+	//if the head is not the student to be deleted, traverse through he rest of the nodes at that array slot
+	if (temp->next->id == id) {
+	  //if the next student is the one that should be deleted, make the current student point to the next next student and delete the next student
+	  node * templeRun = temp->next;
+	  temp->next = templeRun->next;
+	  delete templeRun;
+	  exists = true;
+	  break;
+	}
+	temp = temp->next;
+      }
+    }
+    
+    if (exists == false) {
+      //if the student doesn't exist, then the following message prints
+	cout << "Student doesn't exist!" << endl;
+    }
+  }
+
+  else {
+    //if there's nothing in the array slot, then the following message prints
+    cout << "Student doesn't exist!" << endl;
+  }  
 }
 
 void rehash(node ** &hashTable, int &tableSize) {
@@ -204,7 +285,7 @@ void rehash(node ** &hashTable, int &tableSize) {
     while (hashTable[i] != NULL) {
       cout << "There is a node in the " << i << " index of the array" << endl;
       //if the current index is not a null character (has a node), then checks to see what index it should go in in the new array
-      int arraySlot = hashFunction(hashTable[i], tableSize);
+      int arraySlot = hashFunction(hashTable[i]->id, tableSize);
       cout << "This node should go in the " << arraySlot << " index of the new array" << endl;
       if (newHashTable[arraySlot] != NULL) {
 	cout << "There is already a node in the " << arraySlot << " index of the new array" << endl;
@@ -238,23 +319,12 @@ void rehash(node ** &hashTable, int &tableSize) {
     }
   }
 
+  //"updates" the size of the hash table and deletes the old one
   hashTable = newHashTable;
+  delete hashTable;
   
   if (needToRehash == true) {
+    //if there are more than 3 collisions when transferring from the old hash table, then the table is rehashed
     rehash(newHashTable, tableSize);
-  }
-
-  for (int i = 0; i < tableSize; ++i) {
-    cout << i << " " ;
-    if (newHashTable[i] != NULL) {
-      cout << "Array index: " << i << endl;
-      node * current = NULL;
-      current = newHashTable[i];
-      while (current != NULL) {
-	cout << "Name: " << current->firstName << " " << current->lastName << '\t' << "ID: " << current->id << '\t' << "GPA: " << current->gpa << endl;
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-	current = current->next;
-      }
-    }
   }
 }
