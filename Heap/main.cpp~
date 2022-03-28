@@ -1,0 +1,28 @@
+/*
+Name: Varun Krishnakumar
+Date: 3/28/22
+This is the heap program! It takes in input from either a file or through user input and orders all the different numbers inputted from largest to smallest.
+ */
+
+#include <iostream>
+#include <cstring>
+#include <cctype>
+
+using namespace std;
+
+struct bnode {
+  bnode * right;
+  bnode * left;
+  int data;
+};
+
+
+
+int main() {
+  int input = 0;
+  while (true) {
+    cout << "Enter a number: ";
+    cin >> input;
+    createAndAdd(input);
+  }
+}
