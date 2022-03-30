@@ -15,7 +15,7 @@ int main() {
   int input2 = 0;
   char arr[2];
   int inputNums[100];
-  int heap[100];
+  int tree[100];
 
   for (int i = 0; i < 100; ++i) {
     inputNums[i] = -1;
@@ -38,4 +38,21 @@ int main() {
       }
     }
   }
+
+  for (int i = 1; i < 100; ++i) {
+    
+  }
+}
+
+int makeTree(int * unorderedList, int * &orderedList) {
+  //look at each element in the unordered list and recursively create a tree with it somehow
+  int largest = 0;
+  
+  for (int i = 0; i < 100; ++i) {
+    if (unorderedList[i] != -1 && unorderedList[i-1] != -1) {
+      if 
+    }
+  }
+
+  return largest;
 }
