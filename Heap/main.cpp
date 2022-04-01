@@ -58,3 +58,24 @@ void storeToTree(int * tree, int inputSlot) {
     }
   }
 }
+
+void sink(int * tree, int numIndex) {
+  if (tree[numIndex] != -1) {
+    if (tree[numIndex] < tree[numIndex * 2] || tree[numIndex] < tree[numIndex * 2 + 1]) {
+      int largerIndex = 0;
+      if (tree[numIndex * 2] > tree[numIndex * 2 + 1]) {
+	largerIndex = numIndex * 2;
+      }
+      
+      else {
+	largerIndex = numindex * 2 + 1;
+      }
+
+      int temp = tree[numIndex];
+
+      tree[numIndex] = tree[largerIndex];
+      tree[largerIndex] = temp;
+      sink(tree, largerIndex);
+    }
+  }
+}
