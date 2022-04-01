@@ -7,18 +7,20 @@ This is the heap program! It takes in input from either a file or through user i
 #include <iostream>
 #include <cstring>
 #include <cctype>
+#include <math.h>
 
 using namespace std;
+
+void storeToTree(int * tree, int inputSlot);
 
 int main() {
   int input1 = 0;
   int input2 = 0;
   char arr[2];
-  int inputNums[100];
   int tree[100];
 
   for (int i = 0; i < 100; ++i) {
-    inputNums[i] = -1;
+    tree[i] = -1;
   }
   
   cout << "Would you like to input numbers manually (M) or using a file (F)? ";
@@ -29,30 +31,30 @@ int main() {
     for (int i = 0; i < input1; ++i) {
       cout << "Enter a number: ";
       cin >> input2;
-      for (int i = 0; i < 100; ++i) {
-	if (inputNums[i] == -1) {
-	  inputNums[i] = input2;
-	  cout << inputNums[i] << endl;
+      for (int j = 1; j < 100; ++j) {
+	if (tree[j] == -1) {
+	  tree[j] = input2;
+	  storeToTree(tree, j);
 	  break;
+	}
+      }
+
+      for (int k = 1; k < 100; ++k) {
+	if (tree[k] != -1) {
+	  cout << tree[k] << ", ";
 	}
       }
     }
   }
-
-  for (int i = 1; i < 100; ++i) {
-    
-  }
 }
 
-int makeTree(int * unorderedList, int * &orderedList) {
-  //look at each element in the unordered list and recursively create a tree with it somehow
-  int largest = 0;
-  
-  for (int i = 0; i < 100; ++i) {
-    if (unorderedList[i] != -1 && unorderedList[i-1] != -1) {
-      if 
+void storeToTree(int * tree, int inputSlot) {
+  if (inputSlot > 1) {
+    if (tree[inputSlot] > tree[(int)(floor(inputSlot/2))]) {
+      int temp = tree[inputSlot];
+      tree[inputSlot] = tree[(int)(floor(inputSlot/2))];
+      tree[(int)(floor(inputSlot/2))] = temp;
+      storeToTree(tree, (int)(floor(inputSlot/2)));
     }
   }
-
-  return largest;
 }
