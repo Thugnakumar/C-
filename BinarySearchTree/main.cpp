@@ -20,15 +20,234 @@ struct node {
   node * right;
 };
 
-void addToTree();
-void removeFromTree();
-void searchTree();
-void printTree();
+void addToTree(node * current, node * &root, node * newNode);
+void removeFromTree(node * current);
+void searchTree(node * current, int searchNum, bool &found);
+void printTree(node * current, int treeDepth);
 
 int main() {
   //where everything happens
-  char arr[2];
+  char arr[2]; //character array for storing user command input
+  int numOfNums = 0; //variable to keep track of the number of numbers in the file
+  int numInput; //variable for reading in a number from a file (one at a time)
+  bool found = false; //boolean for searching
+  node * root = NULL; //root node
   
+  cout << "Welcome to the Binary Search Tree program!" << endl;
+  while (true) {
+    cout << "What would you like to do?" << endl;
+    cout << "Would you like to Add (A) a data value, Remove (R) a data value, Search (S) for a data value, Print (P) the tree, or Quit (Q)? ";
+    cin >> arr; //reads in user command
+    for (int i = 0; i < strlen(arr); ++i) {
+      //converts user input to uppercase
+      arr[i] = toupper(arr[i]);
+    }
+
+    if (strcmp(arr, "A") == 0) {
+      //adds a node if that is the user command
+      cout << "Would you like to add in manually (M) or through a file (F)? ";
+      cin >> arr;
+
+      for (int i = 0; i < strlen(arr); ++i) {
+	//converts user input to uppercase
+	arr[i] = toupper(arr[i]);
+      }
+      
+      if (strcmp(arr, "M") == 0) {
+	cout << "How many numbers would you like to input? ";
+	cin >> numOfNums;
+	for (int i = 0; i < numOfNums; ++i) {
+	  //creates a new node with the number inputted as data
+	  node * newNode = new node();
+	  newNode->right = NULL;
+	  newNode->left = NULL;
+	  cout << "What number would you like to input? ";
+	  cin >> newNode->data;
+
+	  addToTree(root, root, newNode);
+	  printTree(root, 0);
+	}
+      }
+
+      else if (strcmp(arr, "F") == 0) {
+	//if the user wants to input using a file, it specifies the file name and stores each of the numbers in the file to the tree
+        ifstream numInput;
+        numInput.open("numList.txt");
+
+        while (!numInput.eof()) {
+	  node * newNode = new node();
+	  newNode->right = NULL;
+	  newNode->left = NULL;
+	  numInput >> newNode->data;
+
+	  addToTree(root, root, newNode);
+        }
+	printTree(root, 0);
+      }
+
+      else {
+        cout << "Not a valid input!" << endl;
+      }
+    }
+
+    else if (strcmp(arr, "R") == 0) {
+      //removes a node if that is the user command
+    }
+
+    else if (strcmp(arr, "S") == 0) {
+      //searches for a node if that is the user command
+      cout << "What number would you like to search for? ";
+      cin >> numInput;
+      found = false;
+      searchTree(root, numInput, found);
+      if (found == true) {
+	cout << numInput << " is in the tree!" << endl;
+      }
+
+      else {
+	cout << numInput << " isn't in the tree!" << endl;
+      }
+    }
+
+    else if (strcmp(arr, "P") == 0) {
+      //prints the tree if that is the user command
+      printTree(root, 0);
+    }
+
+    else if (strcmp(arr, "Q") == 0){
+      //exits the program if that is the user command
+      break;
+    }
+
+    else {
+      cout << "Not a valid input!" << endl;
+    }
+  }
+}
+
+void addToTree(node * current, node * &root, node * newNode) {    
+  if (current == root && current == NULL) {
+    //if there's currently nothing in the tree, then sets the first node made to be the head
+    root = newNode;
+  }
   
-  
+  else {
+    //if there's something in the tree...
+    if (newNode->data > current->data) {
+      //if the new node's data is larger than the current node's data, move to the right node provided it isn't NULL
+      if (current->right != NULL) {
+	addToTree(current->right, root, newNode);
+      }
+
+      else {
+	//if the right node is NULL, set this node to be the right node
+	current->right = newNode;
+      }
+    }
+
+    else if (newNode->data <= current->data) {
+      //if the new node's data is less than the current node's data, move to the left node provided it isn't NULL
+      if (current->left != NULL) {
+	addToTree(current->left, root, newNode);
+      }
+
+      else {
+	//if the left node is NULL, set this tnode to be the left node
+	current->left = newNode;
+      }
+    }
+  }
+}
+
+void searchTree(node * current, int searchNum, bool &found) {
+  if (found == true) {
+    //if the number has already been found, stop traversing the tree
+    return;
+  }
+
+  if (current->data != searchNum) {
+    //if the current node's data is not equal to the number we're searching for...
+    if (current->data > searchNum) {
+      //if the current node's data is larger than the number we're searching for and the node to the left has an actual value, then traverse to the left
+      if (current->left != NULL) {
+	searchTree(current->left, searchNum, found);
+      }
+    }
+
+    else if (current->data < searchNum) {
+      //if the current node's data is smaller than the number we're searching for and the node to the right has an actual value, then traverse to the right
+      if (current->right != NULL) {
+	searchTree(current->right, searchNum, found);
+      }
+    }
+  }
+
+  else {
+    //if the current node's data is equal to the number we're looking for, set the "found" boolean to true to signal that the number has been found
+    found = true;
+  }
+}
+
+void removeFromTree(node * current, int deleteNum, bool &found) {
+  if (current->data != deleteNum) {
+    //if the current node's data is not equal to the number we're searching for...
+    if (current->data > deleteNum) {
+      //if the current node's data is larger than the number we're searching for and the node to the left has an actual value, then traverse to the left
+      if (current->left != NULL) {
+	searchTree(current->left, deleteNum, found);
+      }
+    }
+
+    else if (current->data < deleteNum) {
+      //if the current node's data is smaller than the number we're searching for and the node to the right has an actual value, then traverse to the right
+      if (current->right != NULL) {
+	searchTree(current->right, deleteNum, found);
+      }
+    }
+  }
+
+  else {
+    //if the current node's data is equal to the number we're looking for, check the number of children it has
+    if (current->right != NULL || current->left != NULL) {
+      //if it even has children...
+      if (current->right != NULL && current->left == NULL) {
+	//if there's only a right child, delete the current node and set the previous node's next to be the right child
+      }
+
+      else if (current->left != NULL && current->right == NULL) {
+	//if there's only a left child, delete the current node and set the previous node's next to be the left child
+      }
+
+      else {
+	//if there are 2 children...I have no idea what to do here
+      }
+    }
+
+    else {
+      //set previous node's next to be NULL and delete the current node since there are no children
+    }
+  }
+}
+
+void printTree(node * current, int treeDepth) {
+  //function to print the tree
+  if (current->right != NULL) {
+    //continuously checks to the right of the current node and updates the tree depth and current index each time IF we're not at the\
+ end of the tree and the current index isn't NULL
+    printTree(current->right, treeDepth + 1);
+  }
+
+  for (int i = 0; i < treeDepth; ++i) {
+    //prints the appropriate number of tabs
+    cout << '\t';
+  }
+
+  //prints the value of the current index of the tree
+  cout << current->data << endl;
+
+  if (current->left != NULL) {
+    //continuously checks to the left of the current node and updates the tree depth and current index each time IF we're not at the \
+end of the tree and the current index isn't NULL
+    printTree(current->left, treeDepth + 1);
+  }
 }
