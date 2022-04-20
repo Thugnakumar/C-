@@ -21,7 +21,7 @@ struct node {
 };
 
 void addToTree(node * current, node * &root, node * newNode);
-void removeFromTree(node * current);
+void removeFromTree(node * current, node * parent, int deleteNum);
 void searchTree(node * current, int searchNum, bool &found);
 void printTree(node * current, int treeDepth);
 
@@ -65,7 +65,6 @@ int main() {
 	  cin >> newNode->data;
 
 	  addToTree(root, root, newNode);
-	  printTree(root, 0);
 	}
       }
 
@@ -79,10 +78,11 @@ int main() {
 	  newNode->right = NULL;
 	  newNode->left = NULL;
 	  numInput >> newNode->data;
-
-	  addToTree(root, root, newNode);
+	  
+	  if (newNode->data != 0) {
+	    addToTree(root, root, newNode);
+	  }
         }
-	printTree(root, 0);
       }
 
       else {
@@ -92,6 +92,9 @@ int main() {
 
     else if (strcmp(arr, "R") == 0) {
       //removes a node if that is the user command
+      cout << "What number would you like to remove? ";
+      cin >> numInput;
+      removeFromTree(root, NULL, numInput);
     }
 
     else if (strcmp(arr, "S") == 0) {
@@ -188,20 +191,20 @@ void searchTree(node * current, int searchNum, bool &found) {
   }
 }
 
-void removeFromTree(node * current, int deleteNum, bool &found) {
+void removeFromTree(node * current, node * parent, int deleteNum) {
   if (current->data != deleteNum) {
     //if the current node's data is not equal to the number we're searching for...
     if (current->data > deleteNum) {
       //if the current node's data is larger than the number we're searching for and the node to the left has an actual value, then traverse to the left
       if (current->left != NULL) {
-	searchTree(current->left, deleteNum, found);
+	removeFromTree(current->left, current, deleteNum);
       }
     }
 
     else if (current->data < deleteNum) {
       //if the current node's data is smaller than the number we're searching for and the node to the right has an actual value, then traverse to the right
       if (current->right != NULL) {
-	searchTree(current->right, deleteNum, found);
+	removeFromTree(current->right, current, deleteNum);
       }
     }
   }
@@ -212,19 +215,66 @@ void removeFromTree(node * current, int deleteNum, bool &found) {
       //if it even has children...
       if (current->right != NULL && current->left == NULL) {
 	//if there's only a right child, delete the current node and set the previous node's next to be the right child
+	if (parent->left == current) {
+	  //if the "to be deleted" node is the left child of the parent, then set the right child of the current node to be the left child of the parent node
+	  parent->left = current->right;
+	  delete current;
+	}
+
+	else if (parent->right == current) {
+	  //if the "to be deleted" node is the right child of the parent, then set the left child of the current node to be the right child of the parent node
+	  parent->right = current->right;
+	  delete current;
+	}
       }
 
       else if (current->left != NULL && current->right == NULL) {
 	//if there's only a left child, delete the current node and set the previous node's next to be the left child
+	if (parent->left == current) {
+	  //if the "to be deleted" node is the left child of the parent, then set the right child of the current node to be the left child of the parent node
+	  parent->left = current->right;
+	  delete current;
+	}
+
+	else if (parent->right == current) {
+	  //if the "to be deleted" node is the right child of the parent, then set the left child of the current node to be the right child of the parent node
+	  parent->right = current->right;
+	  delete current;
+	}
       }
 
       else {
-	//if there are 2 children...I have no idea what to do here
+	//if there are 2 children...
+	node * toBeDeleted = current; //stores the node that needs to be deleted in a separate pointer
+	parent = current; //sets parent equal to the current node
+	current = current->right; //moves the current node one over to the right
+
+	while (current->left != NULL) {
+	  //continuously moves both the parent and child left until there's no next left node
+	  parent = current;
+	  current = current->left;
+	}
+
+	toBeDeleted->data = current->data; //changes the "to be deleted" node's data to equal that of the current node
+	parent->left = current->right; //resets the parent pointer
+	delete current; //delete current
+	
       }
     }
 
     else {
       //set previous node's next to be NULL and delete the current node since there are no children
+      if (parent->left == current) {
+	//if the "to be deleted" node is to the left of its parent, then set the parent node's next to be NULL and delete the current node
+	parent->left = current->right;
+	delete current;
+      }
+
+      else if (parent->right == current) {
+	//if the "to be deleted" node is to the right of its parent, then set the parent node's next to be NULL and delete the current node
+	parent->right = current->right;
+	delete current;
+      }
     }
   }
 }
