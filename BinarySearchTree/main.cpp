@@ -245,6 +245,7 @@ void removeFromTree(node * current, node * parent, int deleteNum) {
 
       else {
 	//if there are 2 children...
+	int numLeft = 0; //integer for keeping track of how many times it goes left in the right-left-left-left... sequence
 	node * toBeDeleted = current; //stores the node that needs to be deleted in a separate pointer
 	parent = current; //sets parent equal to the current node
 	current = current->right; //moves the current node one over to the right
@@ -253,10 +254,18 @@ void removeFromTree(node * current, node * parent, int deleteNum) {
 	  //continuously moves both the parent and child left until there's no next left node
 	  parent = current;
 	  current = current->left;
+	  numLeft++;
 	}
 
 	toBeDeleted->data = current->data; //changes the "to be deleted" node's data to equal that of the current node
-	parent->left = current->right; //resets the parent pointer
+	if (numLeft > 0) {
+	  parent->left = current->right; //resets the parent pointer
+	}
+
+	else {
+	  //if there's no left node in the right-left-left-left... sequence, then set the parent's right to be equal to current's right
+	  parent->right = current->right;
+	}
 	delete current; //delete current
 	
       }
