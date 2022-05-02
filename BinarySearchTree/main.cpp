@@ -232,13 +232,13 @@ void removeFromTree(node * current, node * parent, int deleteNum) {
 	//if there's only a left child, delete the current node and set the previous node's next to be the left child
 	if (parent->left == current) {
 	  //if the "to be deleted" node is the left child of the parent, then set the right child of the current node to be the left child of the parent node
-	  parent->left = current->right;
+	  parent->left = current->left;
 	  delete current;
 	}
 
 	else if (parent->right == current) {
 	  //if the "to be deleted" node is the right child of the parent, then set the left child of the current node to be the right child of the parent node
-	  parent->right = current->right;
+	  parent->right = current->left;
 	  delete current;
 	}
       }
@@ -250,19 +250,24 @@ void removeFromTree(node * current, node * parent, int deleteNum) {
 	parent = current; //sets parent equal to the current node
 	current = current->right; //moves the current node one over to the right
 
+	cout << "Current: " << current->data << endl;
+
 	while (current->left != NULL) {
 	  //continuously moves both the parent and child left until there's no next left node
 	  parent = current;
 	  current = current->left;
 	  numLeft++;
+	  cout << "Current: " << current->data << endl;
 	}
+
+	cout << "Node to be deleted: " << toBeDeleted->data << endl;
 
 	toBeDeleted->data = current->data; //changes the "to be deleted" node's data to equal that of the current node
-	if (numLeft > 0) {
+	/*if (numLeft > 0) {
 	  parent->left = current->right; //resets the parent pointer
-	}
+	  }*/
 
-	else {
+	if (numLeft == 0) {
 	  //if there's no left node in the right-left-left-left... sequence, then set the parent's right to be equal to current's right
 	  parent->right = current->right;
 	}
