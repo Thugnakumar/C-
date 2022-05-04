@@ -1,7 +1,7 @@
 /*
 Name: Varun Krishnakumar
-Date: 4/18/22
-This is the binary search tree program! It takes in input from the user or from a file and turns it into a binary search tree! The user can then search for a particular number, delete a particular number, or print a visual representation of the tree. If the user wants to delete a number, then the tree updates.
+Date: 5/3/22
+This is the red black tree program! It takes in input from the user or from a file and turns it into a binary search tree! Each node of the tree has a color associated with it and the colors can only occur in certain patterns. The tree restructures itself until those pattern requirements are fulfilled.
  */
 
 //all the libraries
@@ -18,6 +18,7 @@ struct node {
   int data;
   node * left;
   node * right;
+  node * parent;
   char color;
 };
 
@@ -25,7 +26,7 @@ void addToTree(node * current, node * &root, node * newNode);
 void removeFromTree(node * current, node * parent, int deleteNum);
 void searchTree(node * current, int searchNum, bool &found);
 void printTree(node * current, int treeDepth);
-void parentAndUncleRed(node * current, node * parent, node * grandparent);
+void parentAndUncleRed(node * current, node * parent, node * grandparent, node * &root);
 
 int main() {
   //where everything happens
@@ -65,7 +66,7 @@ int main() {
 	  newNode->left = NULL;
 	  cout << "What number would you like to input? ";
 	  cin >> newNode->data;
-	  newNode->color = "R";
+	  newNode->color = 'R';
 
 	  addToTree(root, root, newNode);
 	}
@@ -81,7 +82,7 @@ int main() {
 	  newNode->right = NULL;
 	  newNode->left = NULL;
 	  numInput >> newNode->data;
-	  newNode->color = "R";
+	  newNode->color = 'R';
 	  
 	  if (newNode->data != 0) {
 	    addToTree(root, root, newNode);
@@ -136,7 +137,7 @@ void addToTree(node * current, node * &root, node * newNode) {
   if (current == root && current == NULL) {
     //if there's currently nothing in the tree, then sets the first node made to be the head
     root = newNode;
-    newNode->color = "B";
+    newNode->color = 'B';
   }
   
   else {
@@ -160,10 +161,15 @@ void addToTree(node * current, node * &root, node * newNode) {
       }
 
       else {
-	//if the left node is NULL, set this tnode to be the left node
+	//if the left node is NULL, set this node to be the left node
 	current->left = newNode;
       }
     }
+    newNode->parent = current;
+  }
+
+  if (newNode->parent != NULL && newNode->parent->parent != NULL) {
+    parentAndUncleRed(newNode, newNode->parent, newNode->parent->parent, root);
   }
 }
 
@@ -312,7 +318,7 @@ void printTree(node * current, int treeDepth) {
   }
 
   //prints the value of the current index of the tree
-  cout << current->data << endl;
+  cout << current->data << "--" << current->color << endl;
 
   if (current->left != NULL) {
     //continuously checks to the left of the current node and updates the tree depth and current index each time IF we're not at the \
@@ -321,15 +327,26 @@ end of the tree and the current index isn't NULL
   }
 }
 
-void parentAndUncleRed(node * current, node * parent, node * grandparent) {
-  if (grandparent->left != NULL && grandparent->right != NULL) {
+void parentAndUncleRed(node * current, node * parent, node * grandparent, node * &root) {
+  if (grandparent != NULL && grandparent->left != NULL && grandparent->right != NULL) {
     if (grandparent->right == parent) {
-      if (parent->color == "R" && grandparent->left == "R") {
+      if (parent->color == 'R' && grandparent->left->color == 'R') {
+	grandparent->color = 'R';
+	parent->color = 'B';
+	grandparent->left->color = 'B';
       }
     }
 
     else if (grandparent->left == parent) {
-      if (parent->color == "R" && grandparent->right == "R") {
+      if (parent->color == 'R' && grandparent->right->color == 'R') {
+	grandparent->color = 'R';
+	parent->color = 'B';
+	grandparent->right->color = 'B';
       }
     }
+
+    if (grandparent->parent != NULL && grandparent->parent->parent != NULL) {
+      parentAndUncleRed(grandparent, grandparent->parent, grandparent->parent->parent, root);
+    }
+  }
 }
