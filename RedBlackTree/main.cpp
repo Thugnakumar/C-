@@ -27,6 +27,7 @@ void removeFromTree(node * current, node * parent, int deleteNum);
 void searchTree(node * current, int searchNum, bool &found);
 void printTree(node * current, int treeDepth);
 void parentAndUncleRed(node * current, node * parent, node * grandparent, node * &root);
+void case4(node * current, node * parent, node * &root);
 
 int main() {
   //where everything happens
@@ -171,6 +172,7 @@ void addToTree(node * current, node * &root, node * newNode) {
   if (newNode->parent != NULL && newNode->parent->parent != NULL) {
     parentAndUncleRed(newNode, newNode->parent, newNode->parent->parent, root);
   }
+  root->color = 'B';
 }
 
 void searchTree(node * current, int searchNum, bool &found) {
@@ -328,9 +330,13 @@ end of the tree and the current index isn't NULL
 }
 
 void parentAndUncleRed(node * current, node * parent, node * grandparent, node * &root) {
+  //function for changing the color of nodes if both the parent and uncle node are red
   if (grandparent != NULL && grandparent->left != NULL && grandparent->right != NULL) {
+    //if the grandparent node actually exists and it has 2 children...
     if (grandparent->right == parent) {
+      //check to see if the grandparent's right node is the parent node
       if (parent->color == 'R' && grandparent->left->color == 'R') {
+	//if both the parent and uncle are red, then change the grandparent's color to red and both parents' color to black
 	grandparent->color = 'R';
 	parent->color = 'B';
 	grandparent->left->color = 'B';
@@ -338,7 +344,9 @@ void parentAndUncleRed(node * current, node * parent, node * grandparent, node *
     }
 
     else if (grandparent->left == parent) {
+      //if the grandparent's left child is the parent node...
       if (parent->color == 'R' && grandparent->right->color == 'R') {
+	//if both the parent and uncle are red again, then change the grandparent's color to red and both parent and uncle to black
 	grandparent->color = 'R';
 	parent->color = 'B';
 	grandparent->right->color = 'B';
@@ -346,7 +354,69 @@ void parentAndUncleRed(node * current, node * parent, node * grandparent, node *
     }
 
     if (grandparent->parent != NULL && grandparent->parent->parent != NULL) {
+      //recursively call this function on the grandparent until the grandparent's parent and/or grandparent aren't NULL
       parentAndUncleRed(grandparent, grandparent->parent, grandparent->parent->parent, root);
+    }
+  }
+}
+
+void case4(node * current, node * parent, node * &root) {
+  if (parent != NULL && parent->parent != NULL) {
+    if (parent->right == current && current->color == 'R' && parent->parent->right->color=='B') {
+      parent->parent->left = current;
+      current->parent = parent->parent;
+      parent->left = current->left;
+      current->left = parent;
+      parent->parent = current;
+    }
+
+    else if (parent->left == current && current->color == 'R' && parent->parent->left->color == 'B'){
+      parent->parent->right = current;
+      current->parent = parent->parent;
+      parent->right = current->right;
+      current->right = parent;
+      parent->parent = current;
+    }
+
+    case5(parent, current, root);
+  }
+}
+
+
+void case5(node * current, node * parent, node * &root) {
+  if (parent->parent != NULL) {
+    node * grandparent = parent->parent;
+    node * greatGrandparent = grandparent->parent;
+
+    if (parent->parent->parent != NULL) {
+      if (greatGrandparent->left == grandparent) {
+	greatGrandparent->left = parent;
+      }
+
+      else if (greatGrandparent->right == grandparent) {
+	greatGrandparent->right = parent;
+      }
+    }
+  
+    if (grandparent->left == parent && parent->left == current) {
+      grandparent->left = parent->right;
+      parent->right = grandparent;
+      grandparent->parent = parent;
+      grandparent->left->parent = grandparent;
+      if (greatGrandparent != NULL){
+	parent->parent = greatGrandparent;
+      }
+
+    }
+
+    else if (grandparent->right == parent && parent->right == current) {
+      grandparent->right = parent->left;
+      parent->left = grandparent;
+      grandparent->parent = parent;
+      grandparent->right->parent = grandparent;
+      if (greatGrandparent != NULL){
+	parent->parent = greatGrandparent;
+      }
     }
   }
 }
