@@ -26,6 +26,7 @@ void addToTree(node * current, node * &root, node * newNode);
 void removeFromTree(node * current, node * parent, int deleteNum);
 void searchTree(node * current, int searchNum, bool &found);
 void printTree(node * current, int treeDepth);
+void balance(node * current, node * parent, node * grandparent, node * &root);
 void parentAndUncleRed(node * current, node * parent, node * grandparent, node * &root);
 void case4(node * current, node * parent, node * &root);
 
@@ -170,9 +171,129 @@ void addToTree(node * current, node * &root, node * newNode) {
   }
 
   if (newNode->parent != NULL && newNode->parent->parent != NULL) {
-    parentAndUncleRed(newNode, newNode->parent, newNode->parent->parent, root);
+    balance(newNode, newNode->parent, newNode->parent->parent, root);
   }
   root->color = 'B';
+}
+
+void balance(node * current, node * parent, node * grandparent, node * &root) {
+  if (current != NULL && parent != NULL && grandparent != NULL) {
+    if (root != NULL) {
+      //change the root's color to black every single time
+      //case 1
+      root->color = 'B';
+    }
+
+    if (grandparent != NULL && grandparent->left != NULL && grandparent->right != NULL) {
+      //case 3
+      //if the grandparent node actually exists and it has 2 children...
+      if (grandparent->right == parent) {
+	//check to see if the grandparent's right node is the parent node
+	if (parent->color == 'R' && grandparent->left->color == 'R') {
+	  //if both the parent and uncle are red, then change the uncle's color to black
+	  grandparent->left->color = 'B';
+	}
+      }
+
+      else if (grandparent->left == parent) {
+	//if the grandparent's left child is the parent node...
+	if (parent->color == 'R' && grandparent->right->color == 'R') {
+	  //if both the parent and uncle are red again, then change the uncle to black
+	  grandparent->right->color = 'B';
+	}
+      }
+
+      grandparent->color = 'R';
+      parent->color = 'B';
+
+      if (grandparent->parent != NULL && grandparent->parent->parent != NULL) {
+	//recursively call this function on the grandparent until the grandparent's parent and/or grandparent aren't NULL
+	balance(grandparent, grandparent->parent, grandparent->parent->parent, root);
+      }
+
+      printTree(current, 0);
+    }
+
+    if (parent != NULL && grandparent != NULL) {
+      //case 4
+      //double-check to make sure parent and grandparent actually exist (since recursive case 3 call might alter the parent and grandparent)
+      if (parent->right == current && current->color == 'R' && (grandparent->right->color=='B' || grandparent->right == NULL)) {
+	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
+	grandparent->left = current;//sets the grandparent's left to be current (instead of parent)
+	current->parent = grandparent; //set the current node's parent to be the grandparent
+	parent->right = current->left; //set the parent's right to be the left subtree of the current node
+	current->left = parent; //set the current's left to be the parent node
+	parent->parent = current; //set the parent's new parent to be the current node
+      }
+
+      else if (parent->left == current && current->color == 'R' && (grandparent->left->color=='B' || grandparent->left == NULL)) {
+	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
+	grandparent->right = current;//sets the grandparent's right to be current (instead of parent)
+	current->parent = grandparent; //set the current node's parent to be the grandparent
+	parent->left = current->right; //set the parent's left to be the right subtree of the current node
+	current->right = parent; //set the current's right to be the parent node
+	parent->parent = current; //set the parent's new parent to be the current node
+      }
+
+      node * temp = current;
+      current = parent;
+      parent = temp;
+    }
+
+    if (grandparent != NULL) {
+      //case 5
+      //if the grandparent exists (i.e. the parent isn't the root)
+      node * greatGrandparent = grandparent->parent; //create a greatGrandparent pointer (can be NULL)
+
+      if (greatGrandparent != NULL) {
+	//if the great grandparent isn't NULL...
+	if (greatGrandparent->left == grandparent) {
+	  //if the grandparent is to the left of the great grandparent then set the great grandparent's left to be the parent instead
+	  greatGrandparent->left = parent;
+	}
+
+	else if (greatGrandparent->right == grandparent) {
+	  //if the grandparent is to the right of the great grandparent then set the great grandparent's right to be the parent instead
+	  greatGrandparent->right = parent;
+	}
+      }
+  
+      if (grandparent->left == parent && parent->left == current) {
+	//if the grandparent's left is the parent and the parent's left is the current node (basically what case 4 set up), then change pointers
+	grandparent->left = parent->right; //set the grandparent's left subtree to be the parent's right subtree
+	parent->right = grandparent; //set the parent's right to be the grandparent now
+	grandparent->parent = parent; //set the grandparent's new parent to be the original parent
+
+	if (grandparent->left != NULL) {
+	  //if grandparent's new left isn't NULL, then set its parent to be the grandparent
+	  grandparent->left->parent = grandparent;
+	}
+	
+	if (greatGrandparent != NULL){
+	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
+	  parent->parent = greatGrandparent;
+	}
+
+      }
+
+      else if (grandparent->right == parent && parent->right == current) {
+	//if the grandparent's left is the parent and the parent's left is the current node (also a setup of case 4) then change pointers
+	grandparent->right = parent->left; //grandparent's right becomes the parent's left node
+	parent->left = grandparent; //the parent's left node becomes the grandparent
+	grandparent->parent = parent; //the grandparent's parent is now the original parent node
+	if (grandparent->right != NULL) {
+	  //if the grandparent's new right isn't a NULL leaf, then set its parent to be grandparent
+	  grandparent->right->parent = grandparent;
+	}
+	if (greatGrandparent != NULL){
+	  //if the great grandparent isn't NULL as well, then set its parent to be the great grandparent
+	  parent->parent = greatGrandparent;
+	}
+      }
+    }
+  }
+
+  printTree(current, 0);
 }
 
 void searchTree(node * current, int searchNum, bool &found) {
@@ -377,8 +498,6 @@ void case4(node * current, node * parent, node * &root) {
       current->right = parent;
       parent->parent = current;
     }
-
-    case5(parent, current, root);
   }
 }
 
