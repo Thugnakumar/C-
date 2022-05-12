@@ -66,6 +66,7 @@ int main() {
 	  node * newNode = new node();
 	  newNode->right = NULL;
 	  newNode->left = NULL;
+	  newNode->parent = NULL;
 	  cout << "What number would you like to input? ";
 	  cin >> newNode->data;
 	  newNode->color = 'R';
@@ -140,6 +141,7 @@ void addToTree(node * current, node * &root, node * newNode) {
     //if there's currently nothing in the tree, then sets the first node made to be the head
     root = newNode;
     newNode->color = 'B';
+    cout << "New node added!" << endl;
   }
   
   else {
@@ -153,6 +155,7 @@ void addToTree(node * current, node * &root, node * newNode) {
       else {
 	//if the right node is NULL, set this node to be the right node
 	current->right = newNode;
+	cout << "New node added!" << endl;
       }
     }
 
@@ -165,32 +168,48 @@ void addToTree(node * current, node * &root, node * newNode) {
       else {
 	//if the left node is NULL, set this node to be the left node
 	current->left = newNode;
+	cout << "New node added!" << endl;
       }
     }
     newNode->parent = current;
   }
 
+  cout << "Printing tree" << endl;
+  printTree(root, 0);
+
+  cout << "Recently entered node: " << newNode->data << endl;
+  
   if (newNode->parent != NULL && newNode->parent->parent != NULL) {
+    cout << "About to enter balance" << endl;
     balance(newNode, newNode->parent, newNode->parent->parent, root);
   }
-  root->color = 'B';
 }
 
 void balance(node * current, node * parent, node * grandparent, node * &root) {
   if (current != NULL && parent != NULL && grandparent != NULL) {
+    cout << "Entered balance" << endl;
+    cout << "Parent color: " << parent->color << '\t' << "Uncle color: " << grandparent->left->color << endl;
     if (root != NULL) {
+      cout << "Case 1" << endl;
       //change the root's color to black every single time
       //case 1
       root->color = 'B';
     }
 
     if (grandparent != NULL && grandparent->left != NULL && grandparent->right != NULL) {
+      cout << "Case 3" << endl;
+      cout << grandparent->data << endl;
       //case 3
       //if the grandparent node actually exists and it has 2 children...
       if (grandparent->right == parent) {
+	cout << "The right is the parent" << endl;
+	cout << "Grandparent: " << grandparent->data << endl;
 	//check to see if the grandparent's right node is the parent node
+	cout << "Parent color: " << parent->color << '\t' << "Uncle color: " << grandparent->left->color << endl;
 	if (parent->color == 'R' && grandparent->left->color == 'R') {
 	  //if both the parent and uncle are red, then change the uncle's color to black
+	  cout << "Changing uncle's color" << endl;
+	  cout << "Uncle: " << grandparent->left->data << endl;
 	  grandparent->left->color = 'B';
 	}
       }
@@ -206,15 +225,21 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
       grandparent->color = 'R';
       parent->color = 'B';
 
+      cout << "Parent color: " << parent->color << '\t' << "Uncle color: " << grandparent->left->color << endl;
+
       if (grandparent->parent != NULL && grandparent->parent->parent != NULL) {
 	//recursively call this function on the grandparent until the grandparent's parent and/or grandparent aren't NULL
+	cout << "Entering this recursive call" << endl;
+	cout << "Grandparent data: " << grandparent->data << endl;
+	cout << "Great grandparent data: " << grandparent->parent->data << endl;
+	cout << "Great great grandparent data: " << grandparent->parent->parent->data << endl;
 	balance(grandparent, grandparent->parent, grandparent->parent->parent, root);
+	return;
       }
-
-      printTree(current, 0);
     }
 
     if (parent != NULL && grandparent != NULL) {
+      cout << "Case 4" << endl;
       //case 4
       //double-check to make sure parent and grandparent actually exist (since recursive case 3 call might alter the parent and grandparent)
       if (parent->right == current && current->color == 'R' && (grandparent->right->color=='B' || grandparent->right == NULL)) {
