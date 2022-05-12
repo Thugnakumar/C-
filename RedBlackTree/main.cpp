@@ -242,7 +242,7 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
       cout << "Case 4" << endl;
       //case 4
       //double-check to make sure parent and grandparent actually exist (since recursive case 3 call might alter the parent and grandparent)
-      if (parent->right == current && current->color == 'R' && (grandparent->right->color=='B' || grandparent->right == NULL)) {
+      if (parent->color == 'R' && parent->right == current && current->color == 'R' && (grandparent->right == NULL || grandparent->right->color=='B')) {
 	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
 	grandparent->left = current;//sets the grandparent's left to be current (instead of parent)
 	current->parent = grandparent; //set the current node's parent to be the grandparent
@@ -251,7 +251,7 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	parent->parent = current; //set the parent's new parent to be the current node
       }
 
-      else if (parent->left == current && current->color == 'R' && (grandparent->left->color=='B' || grandparent->left == NULL)) {
+      else if (parent->color == 'R' && parent->left == current && current->color == 'R' && (grandparent->left == NULL || grandparent->left->color=='B')) {
 	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
 	grandparent->right = current;//sets the grandparent's right to be current (instead of parent)
 	current->parent = grandparent; //set the current node's parent to be the grandparent
@@ -283,7 +283,7 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	}
       }
   
-      if (grandparent->left == parent && parent->left == current) {
+      if (grandparent->left == parent && parent->left == current && (grandparent->right == NULL || grandparent->right->color == 'B')) {
 	//if the grandparent's left is the parent and the parent's left is the current node (basically what case 4 set up), then change pointers
 	grandparent->left = parent->right; //set the grandparent's left subtree to be the parent's right subtree
 	parent->right = grandparent; //set the parent's right to be the grandparent now
@@ -298,10 +298,9 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
 	  parent->parent = greatGrandparent;
 	}
-
       }
 
-      else if (grandparent->right == parent && parent->right == current) {
+      else if (grandparent->right == parent && parent->right == current && (grandparent->right == NULL || grandparent->right->color == 'B')) {
 	//if the grandparent's left is the parent and the parent's left is the current node (also a setup of case 4) then change pointers
 	grandparent->right = parent->left; //grandparent's right becomes the parent's left node
 	parent->left = grandparent; //the parent's left node becomes the grandparent
@@ -315,6 +314,14 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	  parent->parent = greatGrandparent;
 	}
       }
+
+      if (grandparent == root) {
+	root = parent;
+      }
+
+      parent->color = 'B';
+      grandparent->color = 'R';
+
     }
   }
 
