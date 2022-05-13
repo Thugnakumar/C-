@@ -259,15 +259,15 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	parent->left = current->right; //set the parent's left to be the right subtree of the current node
 	current->right = parent; //set the current's right to be the parent node
 	parent->parent = current; //set the parent's new parent to be the current node
+	node * temp = current;
+	current = parent;
+	parent = temp;
       }
-
-      node * temp = current;
-      current = parent;
-      parent = temp;
     }
 
     if (grandparent != NULL) {
       //case 5
+      bool case5Done = false;
       //if the grandparent exists (i.e. the parent isn't the root)
       node * greatGrandparent = grandparent->parent; //create a greatGrandparent pointer (can be NULL)
 
@@ -300,6 +300,8 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
 	  parent->parent = greatGrandparent;
 	}
+
+	case5Done = true;
       }
 
       else if (grandparent->right == parent && parent->right == current && (grandparent->right == NULL || grandparent->right->color == 'B')) {
@@ -315,15 +317,18 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	  //if the great grandparent isn't NULL as well, then set its parent to be the great grandparent
 	  parent->parent = greatGrandparent;
 	}
+
+	case5Done = true;
       }
 
-      if (grandparent == root) {
-	root = parent;
+      if (case5Done == true) {
+	if (grandparent == root) {
+	  root = parent;
+	}
+
+	parent->color = 'B';
+	grandparent->color = 'R';
       }
-
-      parent->color = 'B';
-      grandparent->color = 'R';
-
     }
   }
 
