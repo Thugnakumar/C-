@@ -239,11 +239,11 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
     }
 
     if (parent != NULL && grandparent != NULL) {
-      cout << "Case 4" << endl;
       //case 4
       //double-check to make sure parent and grandparent actually exist (since recursive case 3 call might alter the parent and grandparent)
       if (parent->color == 'R' && parent->right == current && current->color == 'R' && (grandparent->right == NULL || grandparent->right->color=='B')) {
 	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
+	cout << "Case 4" << endl;
 	grandparent->left = current;//sets the grandparent's left to be current (instead of parent)
 	current->parent = grandparent; //set the current node's parent to be the grandparent
 	parent->right = current->left; //set the parent's right to be the left subtree of the current node
@@ -253,6 +253,7 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 
       else if (parent->color == 'R' && parent->left == current && current->color == 'R' && (grandparent->left == NULL || grandparent->left->color=='B')) {
 	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
+	cout << "Case 4" << endl;
 	grandparent->right = current;//sets the grandparent's right to be current (instead of parent)
 	current->parent = grandparent; //set the current node's parent to be the grandparent
 	parent->left = current->right; //set the parent's left to be the right subtree of the current node
@@ -272,6 +273,7 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 
       if (greatGrandparent != NULL) {
 	//if the great grandparent isn't NULL...
+	cout << "Case 5" << endl;
 	if (greatGrandparent->left == grandparent) {
 	  //if the grandparent is to the left of the great grandparent then set the great grandparent's left to be the parent instead
 	  greatGrandparent->left = parent;
@@ -325,7 +327,7 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
     }
   }
 
-  printTree(current, 0);
+  printTree(root, 0);
 }
 
 void searchTree(node * current, int searchNum, bool &found) {
