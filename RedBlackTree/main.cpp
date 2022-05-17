@@ -332,7 +332,7 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
   }
 }
 
-/*void searchTree(node * current, int searchNum, bool &found) {
+void searchTree(node * current, int searchNum, bool &found) {
   if (found == true) {
     //if the number has already been found, stop traversing the tree
     return;
@@ -388,12 +388,22 @@ void removeFromTree(node * current, node * parent, int deleteNum) {
 	if (parent->left == current) {
 	  //if the "to be deleted" node is the left child of the parent, then set the right child of the current node to be the left child of the parent node
 	  parent->left = current->right;
+
+	  if (current->color == 'B') {
+	    parent->left->color = 'B';
+	  }
+	  
 	  delete current;
 	}
 
 	else if (parent->right == current) {
 	  //if the "to be deleted" node is the right child of the parent, then set the left child of the current node to be the right child of the parent node
 	  parent->right = current->right;
+
+	  if (current->color == 'B') {
+	    parent->right->color = 'B';
+	  }
+	  
 	  delete current;
 	}
       }
@@ -461,7 +471,7 @@ void removeFromTree(node * current, node * parent, int deleteNum) {
       }
     }
   }
-}*/
+}
 
 void printTree(node * current, int treeDepth) {
   //function to print the tree
