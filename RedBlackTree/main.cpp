@@ -193,11 +193,9 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
       //case 3
       //if the grandparent node actually exists and it has 2 children...
       if (grandparent->right == parent) {
-	cout << "This is correct" << endl;
 	//check to see if the grandparent's right node is the parent node
 	if (parent->color == 'R' && grandparent->left != parent && grandparent->left->color == 'R') {
 	  //if both the parent and uncle are red, then change the uncle's color to black
-	  cout << "So is this" << endl;
 	  grandparent->left->color = 'B';
 	  grandparent->color = 'R';
 	  parent->color = 'B';
@@ -214,23 +212,10 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	}
       }
 
-      cout << "Just before the if statement" << endl;
-
-
-      cout << "Current: " << current->data << endl;
-      cout << "Parent: " << parent->data << endl;
-      cout << "Grandparent: " << grandparent->data << endl;
-      cout << "Great-grandparent: " << grandparent->parent->data << endl;
-      cout << "Great great grandparent: " << grandparent->parent->parent->data << endl;
-
       if (grandparent->parent != NULL && grandparent->parent->parent != NULL) {
 	//recursively call this function on the grandparent until the grandparent's parent and/or grandparent aren't NULL
-	cout << "This shouldn't be happening" << endl;
-	return;
 	balance(grandparent, grandparent->parent, grandparent->parent->parent, root);
       }
-
-      cout << "Resetting pointers" << endl;
 
       current->parent = parent; //resets the parent pointer in case the above recursive call messes up the order of things
       current->parent->parent = grandparent; //resets the grandparent pointer in case the above recursive call messes up the order of things
@@ -288,14 +273,14 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	    greatGrandparent->left = parent;
 	  }
 
-	  else if (greatGrandparent->right == parent){
+	  else if (greatGrandparent->right == grandparent){
 	    //if the grandparent is the right child of the great grandparent, then set the parent to be the right child of the great grandparent
 	    greatGrandparent->right = parent;
 	  }
 	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
-	  parent->parent = greatGrandparent;
 	}
 
+	parent->parent = greatGrandparent;
 	case5Done = true;
       }
 
@@ -316,17 +301,18 @@ void balance(node * current, node * parent, node * grandparent, node * &root) {
 	    greatGrandparent->left = parent;
 	  }
 
-	  else if (greatGrandparent->right == parent){
+	  else if (greatGrandparent->right == grandparent){
 	    //if the grandparent is the right child of the great grandparent, then set the parent to be the right child of the great grandparent
 	    greatGrandparent->right = parent;
 	  }
 	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
-	  parent->parent = greatGrandparent;
 	}
 
+	parent->parent = greatGrandparent;
 	case5Done = true;
       }
 
+      
       if (case5Done == true) {
 	if (grandparent == root) {
 	  root = parent;
