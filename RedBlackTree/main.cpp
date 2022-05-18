@@ -23,10 +23,11 @@ struct node {
 };
 
 void addToTree(node * current, node * &root, node * newNode);
-//void removeFromTree(node * current, node * parent, int deleteNum);
-//void searchTree(node * current, int searchNum, bool &found);
+void removeFromTree(node * current, node * parent, int deleteNum);
+void searchTree(node * current, int searchNum, bool &found);
 void printTree(node * current, int treeDepth);
-void balance(node * current, node * parent, node * grandparent, node * &root);
+void insertionBalance(node * current, node * parent, node * grandparent, node * &root);
+void deletionBalance(node * current, node * parent, node * grandparent, node * &root);
 
 int main() {
   //where everything happens
@@ -181,154 +182,7 @@ void addToTree(node * current, node * &root, node * newNode) {
 
   if (newNode->parent != NULL && newNode->parent->parent != NULL) {
     //if the recently entered node has both a parent and grandparent, run the balance function
-    balance(newNode, newNode->parent, newNode->parent->parent, root);
-  }
-}
-
-void balance(node * current, node * parent, node * grandparent, node * &root) {
-  if (current != NULL && parent != NULL && grandparent != NULL) {
-    //double check to make sure that the current node exists and it has a parent and grandparent
-    
-    if (grandparent != NULL && grandparent->left != NULL && grandparent->right != NULL) {
-      //case 3
-      //if the grandparent node actually exists and it has 2 children...
-      if (grandparent->right == parent) {
-	//check to see if the grandparent's right node is the parent node
-	if (parent->color == 'R' && grandparent->left != parent && grandparent->left->color == 'R') {
-	  //if both the parent and uncle are red, then change the uncle's color to black
-	  grandparent->left->color = 'B';
-	  grandparent->color = 'R';
-	  parent->color = 'B';
-	}
-      }
-
-      else if (grandparent->left == parent) {
-	//if the grandparent's left child is the parent node...
-	if (parent->color == 'R' && grandparent->right != parent && grandparent->right->color == 'R') {
-	  //if both the parent and uncle are red again, then change the uncle to black
-	  grandparent->right->color = 'B';
-	  grandparent->color = 'R';
-	  parent->color = 'B';
-	}
-      }
-
-      if (grandparent->parent != NULL && grandparent->parent->parent != NULL) {
-	//recursively call this function on the grandparent until the grandparent's parent and/or grandparent aren't NULL
-	balance(grandparent, grandparent->parent, grandparent->parent->parent, root);
-      }
-
-      current->parent = parent; //resets the parent pointer in case the above recursive call messes up the order of things
-      current->parent->parent = grandparent; //resets the grandparent pointer in case the above recursive call messes up the order of things
-    }
-
-    if (parent != NULL && grandparent != NULL) {
-      //case 4
-      //double-check to make sure parent and grandparent actually exist (since recursive case 3 call might alter the parent and grandparent)
-      if (parent->color == 'R' && parent->right == current && current->color == 'R' && (grandparent->right == NULL || grandparent->right->color=='B')) {
-	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
-	grandparent->left = current;//sets the grandparent's left to be current (instead of parent)
-	current->parent = grandparent; //set the current node's parent to be the grandparent
-	parent->right = current->left; //set the parent's right to be the left subtree of the current node
-	current->left = parent; //set the current's left to be the parent node
-	parent->parent = current; //set the parent's new parent to be the current node
-	node * temp = current;
-	current = parent;
-	parent = temp;
-      }
-
-      else if (parent->color == 'R' && parent->left == current && current->color == 'R' && (grandparent->left == NULL || grandparent->left->color=='B')) {
-	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
-	grandparent->right = current;//sets the grandparent's right to be current (instead of parent)
-	current->parent = grandparent; //set the current node's parent to be the grandparent
-	parent->left = current->right; //set the parent's left to be the right subtree of the current node
-	current->right = parent; //set the current's right to be the parent node
-	parent->parent = current; //set the parent's new parent to be the current node
-	node * temp = current;
-	current = parent;
-	parent = temp;
-      }
-    }
-
-    if (grandparent != NULL) {
-      //case 5
-      bool case5Done = false;
-      //if the grandparent exists (i.e. the parent isn't the root)
-      node * greatGrandparent = grandparent->parent; //create a greatGrandparent pointer (can be NULL)
-
-      if (parent->color == 'R' && grandparent->left == parent && parent->left == current && (grandparent->right == NULL || grandparent->right->color == 'B')) {
-	//if the grandparent's left is the parent and the parent's left is the current node (basically what case 4 set up), then change pointers
-	grandparent->left = parent->right; //set the grandparent's left subtree to be the parent's right subtree
-	parent->right = grandparent; //set the parent's right to be the grandparent now
-	grandparent->parent = parent; //set the grandparent's new parent to be the original parent
-
-	if (grandparent->left != NULL) {
-	  //if grandparent's new left isn't NULL, then set its parent to be the grandparent
-	  grandparent->left->parent = grandparent;
-	}
-
-	if (greatGrandparent != NULL) {
-	  //if the great grandparent exits...
-	  if (greatGrandparent->left == grandparent) {
-	    //if the grandparent is the left child of the great grandparent, then set the parent to be the left child of the great grandparent
-	    greatGrandparent->left = parent;
-	  }
-
-	  else if (greatGrandparent->right == grandparent){
-	    //if the grandparent is the right child of the great grandparent, then set the parent to be the right child of the great grandparent
-	    greatGrandparent->right = parent;
-	  }
-	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
-	}
-
-	parent->parent = greatGrandparent;
-	case5Done = true;
-      }
-
-      else if (parent->color == 'R' && grandparent->right == parent && parent->right == current && (grandparent->left == NULL || grandparent->left->color == 'B')) {
-	//if the grandparent's right is the parent and the parent's right is the current node (also a setup of case 4) then change pointers
-	grandparent->right = parent->left; //grandparent's right becomes the parent's left node
-	parent->left = grandparent; //the parent's left node becomes the grandparent
-	grandparent->parent = parent; //the grandparent's parent is now the original parent node
-	if (grandparent->right != NULL) {
-	  //if the grandparent's new right isn't a NULL leaf, then set its parent to be grandparent
-	  grandparent->right->parent = grandparent;
-	}
-
-	if (greatGrandparent != NULL) {
-	  //if the great grandparent exits...
-	  if (greatGrandparent->left == grandparent) {
-	    //if the grandparent is the left child of the great grandparent, then set the parent to be the left child of the great grandparent
-	    greatGrandparent->left = parent;
-	  }
-
-	  else if (greatGrandparent->right == grandparent){
-	    //if the grandparent is the right child of the great grandparent, then set the parent to be the right child of the great grandparent
-	    greatGrandparent->right = parent;
-	  }
-	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
-	}
-
-	parent->parent = greatGrandparent;
-	case5Done = true;
-      }
-
-      
-      if (case5Done == true) {
-	if (grandparent == root) {
-	  root = parent;
-	}
-
-	parent->color = 'B';
-	grandparent->color = 'R';
-      }
-    }
-  }
-
-  if (root != NULL) {
-    //change the root's color to black every single time
-    //checks this case last because previous cases might alter color of the root
-    //case 1
-    root->color = 'B';
+    insertionBalance(newNode, newNode->parent, newNode->parent->parent, root);
   }
 }
 
@@ -493,5 +347,163 @@ void printTree(node * current, int treeDepth) {
     //continuously checks to the left of the current node and updates the tree depth and current index each time IF we're not at the \
 end of the tree and the current index isn't NULL
     printTree(current->left, treeDepth + 1);
+  }
+}
+
+void insertionBalance(node * current, node * parent, node * grandparent, node * &root) {
+  if (current != NULL && parent != NULL && grandparent != NULL) {
+    //double check to make sure that the current node exists and it has a parent and grandparent
+    
+    if (grandparent != NULL && grandparent->left != NULL && grandparent->right != NULL) {
+      //case 3
+      //if the grandparent node actually exists and it has 2 children...
+      if (grandparent->right == parent) {
+	//check to see if the grandparent's right node is the parent node
+	if (parent->color == 'R' && grandparent->left != parent && grandparent->left->color == 'R') {
+	  //if both the parent and uncle are red, then change the uncle's color to black
+	  grandparent->left->color = 'B';
+	  grandparent->color = 'R';
+	  parent->color = 'B';
+	}
+      }
+
+      else if (grandparent->left == parent) {
+	//if the grandparent's left child is the parent node...
+	if (parent->color == 'R' && grandparent->right != parent && grandparent->right->color == 'R') {
+	  //if both the parent and uncle are red again, then change the uncle to black
+	  grandparent->right->color = 'B';
+	  grandparent->color = 'R';
+	  parent->color = 'B';
+	}
+      }
+
+      if (grandparent->parent != NULL && grandparent->parent->parent != NULL) {
+	//recursively call this function on the grandparent until the grandparent's parent and/or grandparent aren't NULL
+	insertionBalance(grandparent, grandparent->parent, grandparent->parent->parent, root);
+      }
+
+      current->parent = parent; //resets the parent pointer in case the above recursive call messes up the order of things
+      current->parent->parent = grandparent; //resets the grandparent pointer in case the above recursive call messes up the order of things
+    }
+
+    if (parent != NULL && grandparent != NULL) {
+      //case 4
+      //double-check to make sure parent and grandparent actually exist (since recursive case 3 call might alter the parent and grandparent)
+      if (parent->color == 'R' && parent->right == current && current->color == 'R' && (grandparent->right == NULL || grandparent->right->color=='B')) {
+	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
+	grandparent->left = current;//sets the grandparent's left to be current (instead of parent)
+	current->parent = grandparent; //set the current node's parent to be the grandparent
+	parent->right = current->left; //set the parent's right to be the left subtree of the current node
+	current->left = parent; //set the current's left to be the parent node
+	parent->parent = current; //set the parent's new parent to be the current node
+	node * temp = current;
+	current = parent;
+	parent = temp;
+      }
+
+      else if (parent->color == 'R' && parent->left == current && current->color == 'R' && (grandparent->left == NULL || grandparent->left->color=='B')) {
+	//if the current node is to the right of the parent and the uncle is black then engage tree rotation
+	grandparent->right = current;//sets the grandparent's right to be current (instead of parent)
+	current->parent = grandparent; //set the current node's parent to be the grandparent
+	parent->left = current->right; //set the parent's left to be the right subtree of the current node
+	current->right = parent; //set the current's right to be the parent node
+	parent->parent = current; //set the parent's new parent to be the current node
+	node * temp = current;
+	current = parent;
+	parent = temp;
+      }
+    }
+
+    if (grandparent != NULL) {
+      //case 5
+      bool case5Done = false;
+      //if the grandparent exists (i.e. the parent isn't the root)
+      node * greatGrandparent = grandparent->parent; //create a greatGrandparent pointer (can be NULL)
+
+      if (parent->color == 'R' && grandparent->left == parent && parent->left == current && (grandparent->right == NULL || grandparent->right->color == 'B')) {
+	//if the grandparent's left is the parent and the parent's left is the current node (basically what case 4 set up), then change pointers
+	grandparent->left = parent->right; //set the grandparent's left subtree to be the parent's right subtree
+	parent->right = grandparent; //set the parent's right to be the grandparent now
+	grandparent->parent = parent; //set the grandparent's new parent to be the original parent
+
+	if (grandparent->left != NULL) {
+	  //if grandparent's new left isn't NULL, then set its parent to be the grandparent
+	  grandparent->left->parent = grandparent;
+	}
+
+	if (greatGrandparent != NULL) {
+	  //if the great grandparent exits...
+	  if (greatGrandparent->left == grandparent) {
+	    //if the grandparent is the left child of the great grandparent, then set the parent to be the left child of the great grandparent
+	    greatGrandparent->left = parent;
+	  }
+
+	  else if (greatGrandparent->right == grandparent){
+	    //if the grandparent is the right child of the great grandparent, then set the parent to be the right child of the great grandparent
+	    greatGrandparent->right = parent;
+	  }
+	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
+	}
+
+	parent->parent = greatGrandparent;
+	case5Done = true;
+      }
+
+      else if (parent->color == 'R' && grandparent->right == parent && parent->right == current && (grandparent->left == NULL || grandparent->left->color == 'B')) {
+	//if the grandparent's right is the parent and the parent's right is the current node (also a setup of case 4) then change pointers
+	grandparent->right = parent->left; //grandparent's right becomes the parent's left node
+	parent->left = grandparent; //the parent's left node becomes the grandparent
+	grandparent->parent = parent; //the grandparent's parent is now the original parent node
+	if (grandparent->right != NULL) {
+	  //if the grandparent's new right isn't a NULL leaf, then set its parent to be grandparent
+	  grandparent->right->parent = grandparent;
+	}
+
+	if (greatGrandparent != NULL) {
+	  //if the great grandparent exits...
+	  if (greatGrandparent->left == grandparent) {
+	    //if the grandparent is the left child of the great grandparent, then set the parent to be the left child of the great grandparent
+	    greatGrandparent->left = parent;
+	  }
+
+	  else if (greatGrandparent->right == grandparent){
+	    //if the grandparent is the right child of the great grandparent, then set the parent to be the right child of the great grandparent
+	    greatGrandparent->right = parent;
+	  }
+	  //if the parent isn't the root now, then set parent's parent to be the great grandparent
+	}
+
+	parent->parent = greatGrandparent;
+	case5Done = true;
+      }
+
+      
+      if (case5Done == true) {
+	if (grandparent == root) {
+	  root = parent;
+	}
+
+	parent->color = 'B';
+	grandparent->color = 'R';
+      }
+    }
+  }
+
+  if (root != NULL) {
+    //change the root's color to black every single time
+    //checks this case last because previous cases might alter color of the root
+    //case 1
+    root->color = 'B';
+  }
+}
+
+void deletionBalance(node * current, node * parent, node * grandparent, node * &root) {
+  if (current->color == 'R') {
+    //this accounts for the case in which you have a black parent that gets deleted and is replaced with a red child. The child becomes black as it takes on the parent's place
+    current->color = 'B';
+  }
+
+  else {
+    
   }
 }
