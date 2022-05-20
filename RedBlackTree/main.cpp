@@ -216,23 +216,31 @@ void searchTree(node * current, int searchNum, bool &found) {
 }
 
 void removeFromTree(node * current, node * parent, int deleteNum) {
-  if (current->data != deleteNum) {
+  bool parentIsBlack = false;
+  
+  if (current->color == 'B') {
+    parentIsBlack = true;
+  }
+  
+  while (current->data != deleteNum) {
     //if the current node's data is not equal to the number we're searching for...
     if (current->data > deleteNum) {
       //if the current node's data is larger than the number we're searching for and the node to the left has an actual value, then traverse to the left
       if (current->left != NULL) {
-	removeFromTree(current->left, current, deleteNum);
+	parent = current;
+	current = current->left;
       }
     }
 
     else if (current->data < deleteNum) {
       //if the current node's data is smaller than the number we're searching for and the node to the right has an actual value, then traverse to the right
       if (current->right != NULL) {
-	removeFromTree(current->right, current, deleteNum);
+	parent = current;
+	current = current->right;
       }
     }
   }
-
+                                                                                                                                  
   else {
     //if the current node's data is equal to the number we're looking for, check the number of children it has
     if (current->right != NULL || current->left != NULL) {
@@ -253,7 +261,7 @@ void removeFromTree(node * current, node * parent, int deleteNum) {
 	else if (parent->right == current) {
 	  //if the "to be deleted" node is the right child of the parent, then set the left child of the current node to be the right child of the parent node
 	  parent->right = current->right;
-
+	  
 	  if (current->color == 'B') {
 	    parent->right->color = 'B';
 	  }
@@ -497,13 +505,20 @@ void insertionBalance(node * current, node * parent, node * grandparent, node * 
   }
 }
 
-void deletionBalance(node * current, node * parent, node * grandparent, node * &root) {
+void deletionBalance(node * current, node * parent, node * grandparent, node * &root, bool parentBlack) {
   if (current->color == 'R') {
     //this accounts for the case in which you have a black parent that gets deleted and is replaced with a red child. The child becomes black as it takes on the parent's place
     current->color = 'B';
   }
 
-  else {
-    
+  else if (parentBlack == true && current->color == 'B') {
+    if (root == NULL) {
+      //case 1
+      //if the old parent (that got deleted) was the root, then the new current becomes the new root
+      root = current;
+    }
+
+    if (
+	
   }
 }
