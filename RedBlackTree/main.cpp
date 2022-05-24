@@ -505,20 +505,52 @@ void insertionBalance(node * current, node * parent, node * grandparent, node * 
   }
 }
 
-void deletionBalance(node * current, node * parent, node * grandparent, node * &root, bool parentBlack) {
+void deletionBalance(node * current, node * parent, node * grandparent, node * &root) {
   if (current->color == 'R') {
     //this accounts for the case in which you have a black parent that gets deleted and is replaced with a red child. The child becomes black as it takes on the parent's place
     current->color = 'B';
+    return;
   }
 
-  else if (parentBlack == true && current->color == 'B') {
-    if (root == NULL) {
+  else if (parent->color == 'B' && current->color == 'B') {
+    if (parent == root) {
       //case 1
       //if the old parent (that got deleted) was the root, then the new current becomes the new root
       root = current;
     }
 
-    if (
+    if (current == parent->left && parent->right->color == 'R') {
+      //case 2
+      //first case of case 2 where the child node is the left node of the parent and the child's sibling is red
+      node * sibling = parent->right; //pointer for the sibling node
+      parent->right = sibling->left; //set the parent's right node to be the sibling's left node
+      parent->right->parent = parent; //set the parent's new right's parent
+      sibling->left = parent; //set the sibling's left node to be the parent
+
+      sibling->parent = parent->parent; //set the sibling's parent to be the parent's old parent
+
+      parent->parent = sibling; //set the parent's parent to be the sibling
+
+      parent->color = 'R'; //change the color of the parent to red
+      sibling->color = 'B'; //change the color of the sibling to black
+    }
+
+    else if (current == parent->right && parent->left->color == 'R') {
+      //case 2
+      //second case of case 2 where the child node is the right node of the parent and the child's sibling is red
+      node * sibling = parent->right; //pointer for the sibling node
+      parent->right = sibling->left; //set the parent's left node to be the sibling's right node
+      parent->right->parent = parent; //set the parent's new left's parent
+      sibling->left = parent; //set the sibling's right node to be the parent
+
+      sibling->parent = parent->parent; //set the sibling's parent to be the parent's old parent
+
+      parent->parent = sibling; //set the parent's parent to be the sibling
+
+      parent->color = 'R'; //change the color of the parent to red
+      sibling->color = 'B'; //change the color of the sibling to black
+    }
+    
 	
   }
 }
