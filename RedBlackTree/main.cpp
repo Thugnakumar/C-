@@ -565,8 +565,19 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
       }
     }
 
-    if (parent->color == 'R' && parent->right == current && parent->left != NULL && parent->left->left != NULL && parent->left->right != NULL && parent->left->left->color == 'B' && parent->left->right->color == 'B') {
-      
+    if (parent->color == 'R' && parent->right == current && parent->left != NULL && (parent->left->left == NULL || parent->left->left->color == 'B') && (parent->left->right == NULL || parent->left->right->color == 'B')) {
+      //case 4
+      //if the left sibling has 2 black children and the parent is black then recolor the parent to be black and the left sibling to be red
+      parent->color = 'B';
+      parent->left->color = 'R';
     }
+
+    else if (parent->color == 'R' && parent->left == current && parent->right != NULL && (parent->right->left == NULL || parent->right->left->color == 'B') && (parent->right->right == NULL || parent->right->right->color == 'B')) {
+      //case 4
+      //if the right sibling has 2 black children and the parent is black then recolor the parent to be black and the right sibling to be red
+      parent->color = 'B';
+      parent->right->color = 'R';
+    }
+
   }
 }
