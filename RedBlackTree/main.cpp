@@ -513,12 +513,6 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
   }
 
   else if (parent->color == 'B' && current->color == 'B') {
-    if (parent == root) {
-      //case 1
-      //if the old parent (that got deleted) was the root, then the new current becomes the new root
-      root = current;
-    }
-
     if (current == parent->left && parent->right->color == 'R') {
       //case 2
       //first case of case 2 where the child node is the left node of the parent and the child's sibling is red
@@ -550,7 +544,29 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
       parent->color = 'R'; //change the color of the parent to red
       sibling->color = 'B'; //change the color of the sibling to black
     }
-    
-	
+
+    if (current == parent->right && (parent->left->color == 'B' || parent->right == NULL)) {
+      //case 3
+      //if the current node is to the right of the parent and it's sibling is black, then recolor the sibling
+      parent->left->color == 'R';
+      if (grandparent->parent != NULL) {
+	//as long as the great grandparent exists, call this same function up the tree
+	deletionBalance(parent, grandparent, grandparent->parent, root);
+      }
+    }
+
+    else if (current == parent->left && (parent->right->color == 'B' || parent->right == NULL)) {
+      //case 3
+      //if the current node is to the right of the parent and it's sibling is black, then recolor the sibling
+      parent->right->color == 'R';
+      if (grandparent->parent != NULL) {
+	//as long as the great grandparent exists, call this same function up the tree
+	deletionBalance(parent, grandparent, grandparent->parent, root);
+      }
+    }
+
+    if (parent->color == 'R' && parent->right == current && parent->left != NULL && parent->left->left != NULL && parent->left->right != NULL && parent->left->left->color == 'B' && parent->left->right->color == 'B') {
+      
+    }
   }
 }
