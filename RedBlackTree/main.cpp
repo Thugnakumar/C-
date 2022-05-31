@@ -216,6 +216,9 @@ void searchTree(node * current, int searchNum, bool &found) {
 }
 
 void removeFromTree(node * current, node * parent, int deleteNum) {
+
+  node * nextUp;
+  
   bool parentIsBlack = false;
   
   if (current->color == 'B') {
@@ -307,7 +310,7 @@ void removeFromTree(node * current, node * parent, int deleteNum) {
 	toBeDeleted->data = current->data; //changes the "to be deleted" node's data to equal that of the current node
 	if (numLeft > 0) {
 	  parent->left = current->right; //resets the parent pointer
-	  }
+	}
 
 	if (numLeft == 0) {
 	  //if there's no left node in the right-left-left-left... sequence, then set the parent's right to be equal to current's right
