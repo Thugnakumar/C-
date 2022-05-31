@@ -513,15 +513,25 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
   }
 
   else if (parent->color == 'B' && current->color == 'B') {
+
+    node* sibling;
+    
+    if (current = parent->left) {
+      sibling = parent->right;
+    }
+
+    else if (current = parent->right) {
+      sibling = parent->left;
+    }
+    
     if (current == parent->left && parent->right->color == 'R') {
       //case 2
       //first case of case 2 where the child node is the left node of the parent and the child's sibling is red
-      node * sibling = parent->right; //pointer for the sibling node
       parent->right = sibling->left; //set the parent's right node to be the sibling's left node
       parent->right->parent = parent; //set the parent's new right's parent
       sibling->left = parent; //set the sibling's left node to be the parent
 
-      sibling->parent = parent->parent; //set the sibling's parent to be the parent's old parent
+      sibling->parent = grandparent; //set the sibling's parent to be the parent's old parent
 
       parent->parent = sibling; //set the parent's parent to be the sibling
 
@@ -532,12 +542,11 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
     else if (current == parent->right && parent->left->color == 'R') {
       //case 2
       //second case of case 2 where the child node is the right node of the parent and the child's sibling is red
-      node * sibling = parent->right; //pointer for the sibling node
       parent->right = sibling->left; //set the parent's left node to be the sibling's right node
       parent->right->parent = parent; //set the parent's new left's parent
       sibling->left = parent; //set the sibling's right node to be the parent
 
-      sibling->parent = parent->parent; //set the sibling's parent to be the parent's old parent
+      sibling->parent = grandparent; //set the sibling's parent to be the parent's old parent
 
       parent->parent = sibling; //set the parent's parent to be the sibling
 
@@ -545,39 +554,99 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
       sibling->color = 'B'; //change the color of the sibling to black
     }
 
-    if (current == parent->right && (parent->left->color == 'B' || parent->right == NULL)) {
+    if (current == parent->right && (sibling->color == 'B' || sibling == NULL)) {
       //case 3
       //if the current node is to the right of the parent and it's sibling is black, then recolor the sibling
-      parent->left->color == 'R';
+      sibling->color == 'R';
       if (grandparent->parent != NULL) {
 	//as long as the great grandparent exists, call this same function up the tree
 	deletionBalance(parent, grandparent, grandparent->parent, root);
       }
     }
 
-    else if (current == parent->left && (parent->right->color == 'B' || parent->right == NULL)) {
+    else if (current == parent->left && (sibling->color == 'B' || sibling == NULL)) {
       //case 3
       //if the current node is to the right of the parent and it's sibling is black, then recolor the sibling
-      parent->right->color == 'R';
+      sibling->color == 'R';
       if (grandparent->parent != NULL) {
 	//as long as the great grandparent exists, call this same function up the tree
 	deletionBalance(parent, grandparent, grandparent->parent, root);
       }
     }
 
-    if (parent->color == 'R' && parent->right == current && parent->left != NULL && (parent->left->left == NULL || parent->left->left->color == 'B') && (parent->left->right == NULL || parent->left->right->color == 'B')) {
+    if (parent->color == 'R' && parent->right == current && sibling != NULL && (sibling->left == NULL || sibling->left->color == 'B') && (sibling->right == NULL || sibling->right->color == 'B')) {
       //case 4
       //if the left sibling has 2 black children and the parent is black then recolor the parent to be black and the left sibling to be red
       parent->color = 'B';
-      parent->left->color = 'R';
+      sibling->color = 'R';
     }
 
-    else if (parent->color == 'R' && parent->left == current && parent->right != NULL && (parent->right->left == NULL || parent->right->left->color == 'B') && (parent->right->right == NULL || parent->right->right->color == 'B')) {
+    else if (parent->color == 'R' && parent->left == current && sibling != NULL && (sibling->left == NULL || sibling->left->color == 'B') && (sibling->right == NULL || sibling->right->color == 'B')) {
       //case 4
       //if the right sibling has 2 black children and the parent is black then recolor the parent to be black and the right sibling to be red
       parent->color = 'B';
       parent->right->color = 'R';
     }
 
-  }
+    if (parent->right == current && sibling != NULL && sibling->color == 'B' && (sibling->left->color == 'B' || sibling->left == NULL) && sibling->right != NULL && sibling->right->color == 'R'){
+      //case 5
+      //if the node is to the left of the parent and the sibling is black, the sibling's left is black, and the sibling's right is red, recolor and reset pointers
+      sibling->right->color = 'B'; //change the sibling's right node's color to be black
+      sibling->color = 'R'; //change the sibling's color to be red
+      parent->left = sibling->right; //set the parent's left to be the sibling's right node
+      sibling->right->parent = parent; //set the sibling's right node's parent to be the parent node
+      sibling->right = parent->left->left; //set the sibling's right to be the new left node's left node
+      sibling->right->parent = sibling; //set the sibling's right node's parent to be the sibling
+      parent->left->left = sibling; //set the new left node of the parent's left node to be the sibling
+      sibling->parent = parent->left; //set the parent of the sibling to now be the new left node of the parent
+    }
+
+    else if (parent->left == current && sibling != NULL && sibling->color == 'B' && (sibling->right->color == 'B' || sibling->right == NULL) && sibling->left != NULL && sibling->left->color == 'R'){
+      //case 5
+      //if the node is to the right of the parent and the sibling is black, the sibling's right is black, and the sibling's left is red, recolor and reset pointers
+      sibling->left->color = 'B'; //change the sibling's right node's color to be black
+      sibling->color = 'R'; //change the sibling's color to be red
+      parent->right = sibling->left; //set the parent's right to be the sibling's left node
+      sibling->left->parent = parent; //set the sibling's left node's parent to be the parent node
+      sibling->left = parent->right->right; //set the sibling's left to be the new right node's right node
+      sibling->left->parent = sibling; //set the sibling's left node's parent to be the sibling
+      parent->right->right = sibling; //set the new right node of the parent's right node to be the sibling
+      sibling->parent = parent->right; //set the parent of the sibling to now be the new right node of the parent
+    }
+
+    if (current == parent->right && sibling != NULL && sibling->color == 'B' && sibling->left->color == 'R') {
+      //case 6
+      //if the current node is the right of the parent and the sibling exists and is black, and the sibling has a left node with a red color, then recolor and rotate
+      
+      sibling->color = parent->color; //change the sibling's color to be the parent's current color
+      parent->color = 'B'; //change the parent's color to be black
+      sibling->left->color = 'B'; //change the sibling's left node's color to be black
+      parent->left = sibling->right; //set the parent's left node to be the sibling's right node
+      parent->left->parent = parent; //set the parent's new left node's parent to be the parent
+      sibling->right = parent; //set the sibling's right node to be the parent
+      parent->parent = sibling; //set the parent's parent to be the sibling
+
+      if (grandparent != NULL) {
+	//if the parent is not the root, then set sibling's parent to be the grandparent
+	sibling->parent = grandparent;
+      }      
+    }
+
+    if (current == parent->left && sibling != NULL && sibling->color == 'B' && sibling->right->color == 'R') {
+      //case 6
+      //if the current node is the left of the parent and the sibling exists and is black, and the sibling has a right node with a red color, then recolor and rotate
+      
+      sibling->color = parent->color; //change the sibling's color to be the parent's current color
+      parent->color = 'B'; //change the parent's color to be black
+      sibling->right->color = 'B'; //change the sibling's right node's color to be black
+      parent->right = sibling->left; //set the parent's right node to be the sibling's left node
+      parent->right->parent = parent; //set the parent's new right node's parent to be the parent
+      sibling->left = parent; //set the sibling's left node to be the parent
+      parent->parent = sibling; //set the parent's parent to be the sibling
+
+      if (grandparent != NULL) {
+	//if the parent is not the root, then set sibling's parent to be the grandparent
+	sibling->parent = grandparent;
+      } 
+    }
 }
