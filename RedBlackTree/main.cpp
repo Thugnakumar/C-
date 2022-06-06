@@ -1,6 +1,6 @@
 /*
 Name: Varun Krishnakumar
-Date: 5/3/22
+Date: 5/31/22
 This is the red black tree program! It takes in input from the user or from a file and turns it into a binary search tree! Each node of the tree has a color associated with it and the colors can only occur in certain patterns. The tree restructures itself until those pattern requirements are fulfilled.
  */
 
@@ -243,6 +243,7 @@ void removeFromTree(node * current, node * parent, node * & root, int deleteNum)
       //if there's only a right child, delete the current node and set the previous node's next to be the right child
       if (parent->left == current) {
 	//if the "to be deleted" node is the left child of the parent, then set the right child of the current node to be the left child of the parent node
+	deletionBalance(current->right, current, parent, root);
 	parent->left = current->right;
 
 	if (current->color == 'B' && parent->left != NULL) {
@@ -254,6 +255,7 @@ void removeFromTree(node * current, node * parent, node * & root, int deleteNum)
 
       else if (parent->right == current) {
 	//if the "to be deleted" node is the right child of the parent, then set the left child of the current node to be the right child of the parent node
+	deletionBalance(current->right, current, parent, root);
 	parent->right = current->right;
 
 	if (current->color == 'B' && parent->right != NULL) {
@@ -268,6 +270,7 @@ void removeFromTree(node * current, node * parent, node * & root, int deleteNum)
       //if there's only a left child, delete the current node and set the previous node's next to be the left child
       if (parent->left == current) {
 	//if the "to be deleted" node is the left child of the parent, then set the right child of the current node to be the left child of the parent node
+	deletionBalance(current->left, current, parent, root);
 	parent->left = current->left;
 
 	if (current->color == 'B' && parent->left != NULL) {
@@ -279,6 +282,7 @@ void removeFromTree(node * current, node * parent, node * & root, int deleteNum)
 
       else if (parent->right == current) {
 	//if the "to be deleted" node is the right child of the parent, then set the left child of the current node to be the right child of the parent node
+	deletionBalance(current->left, current, parent, root);
 	parent->right = current->left;
 
 	if (current->color == 'B' && parent->right != NULL) {
@@ -329,12 +333,14 @@ void removeFromTree(node * current, node * parent, node * & root, int deleteNum)
     //set previous node's next to be NULL and delete the current node since there are no children
     if (parent->left == current) {
       //if the "to be deleted" node is to the left of its parent, then set the parent node's next to be NULL and delete the current node
+      deletionBalance(current, parent, parent->parent, root);
       parent->left = current->right;
       delete current;
     }
 
     else if (parent->right == current) {
       //if the "to be deleted" node is to the right of its parent, then set the parent node's next to be NULL and delete the current node
+      deletionBalance(current, parent, parent->parent, root);
       parent->right = current->right;
       delete current;
     }
@@ -512,25 +518,23 @@ void insertionBalance(node * current, node * parent, node * grandparent, node * 
 }
 
 void deletionBalance(node * current, node * parent, node * grandparent, node * &root) {
-  if (current->color == 'R') {
-    //this accounts for the case in which you have a black parent that gets deleted and is replaced with a red child. The child becomes black as it takes on the parent's place
-    current->color = 'B';
-    return;
-  }
-
-  else if (parent->color == 'B' && current->color == 'B') {
-
+  if (parent != NULL && parent->color == 'B' && current->color == 'B') {
+    cout << "Entered deletion balance" << endl;
     node* sibling;
-    
-    if (current = parent->left) {
+
+    if (parent->left == current) {
       sibling = parent->right;
     }
 
-    else if (current = parent->right) {
+    else if (parent->right == current) {
       sibling = parent->left;
     }
-    
-    if (current == parent->left && parent->right->color == 'R') {
+
+    cout << "Set the sibling to be " << sibling->data << endl;
+
+    cout << "About to check case 2" << endl;
+    if (current == parent->left && sibling->color == 'R') {
+      cout << "Case 2" << endl;
       //case 2
       //first case of case 2 where the child node is the left node of the parent and the child's sibling is red
       parent->right = sibling->left; //set the parent's right node to be the sibling's left node
@@ -543,9 +547,12 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
 
       parent->color = 'R'; //change the color of the parent to red
       sibling->color = 'B'; //change the color of the sibling to black
+
+      return;
     }
 
-    else if (current == parent->right && parent->left->color == 'R') {
+    else if (current == parent->right && sibling->color == 'R') {
+      cout << "Case 2" << endl;
       //case 2
       //second case of case 2 where the child node is the right node of the parent and the child's sibling is red
       parent->right = sibling->left; //set the parent's left node to be the sibling's right node
@@ -558,43 +565,64 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
 
       parent->color = 'R'; //change the color of the parent to red
       sibling->color = 'B'; //change the color of the sibling to black
+
+      return;
     }
 
-    if (current == parent->right && (sibling->color == 'B' || sibling == NULL) && sibling->left->color != 'R') {
+    cout << "About to check case 3" << endl;
+
+    if (current == parent->right && (sibling == NULL || sibling->color == 'B') && (sibling->left == NULL || sibling->left->color != 'R')) {
+      cout << "Case 3" << endl;
       //case 3
       //if the current node is to the right of the parent and it's sibling is black, then recolor the sibling
-      sibling->color == 'R';
+      sibling->color = 'R';
       if (grandparent->parent != NULL) {
 	//as long as the great grandparent exists, call this same function up the tree
 	deletionBalance(parent, grandparent, grandparent->parent, root);
       }
-    }
 
-    else if (current == parent->left && (sibling->color == 'B' || sibling == NULL) && sibling->right->color != 'R') {
+      return;
+    }
+    
+    else if (current == parent->left && (sibling == NULL || sibling->color == 'B') && (sibling->right == NULL || sibling->right->color != 'R')) {
+      cout << "Case 3" << endl;
       //case 3
       //if the current node is to the right of the parent and it's sibling is black, then recolor the sibling
-      sibling->color == 'R';
+      sibling->color = 'R';
       if (grandparent->parent != NULL) {
 	//as long as the great grandparent exists, call this same function up the tree
 	deletionBalance(parent, grandparent, grandparent->parent, root);
       }
+
+      return;
     }
 
+    cout << "About to check case 4" << endl;
+    
     if (parent->color == 'R' && parent->right == current && sibling != NULL && (sibling->left == NULL || sibling->left->color == 'B') && (sibling->right == NULL || sibling->right->color == 'B')) {
+      cout << "Case 4" << endl;
       //case 4
       //if the left sibling has 2 black children and the parent is black then recolor the parent to be black and the left sibling to be red
       parent->color = 'B';
       sibling->color = 'R';
+
+      return;
     }
 
     else if (parent->color == 'R' && parent->left == current && sibling != NULL && (sibling->left == NULL || sibling->left->color == 'B') && (sibling->right == NULL || sibling->right->color == 'B')) {
+      cout << "Case 4" << endl;
       //case 4
       //if the right sibling has 2 black children and the parent is black then recolor the parent to be black and the right sibling to be red
       parent->color = 'B';
       parent->right->color = 'R';
+
+      return;
     }
 
-    if (parent->right == current && sibling != NULL && sibling->color == 'B' && (sibling->left->color == 'B' || sibling->left == NULL) && sibling->right != NULL && sibling->right->color == 'R'){
+    cout << "About to check case 5" << endl;
+    
+    if (parent->right == current && sibling != NULL && sibling->color == 'B' && (sibling->left == NULL || sibling->left->color == 'B') && sibling->right != NULL && sibling->right->color == 'R'){
+      cout << "Case 5" << endl;
       //case 5
       //if the node is to the left of the parent and the sibling is black, the sibling's left is black, and the sibling's right is red, recolor and reset pointers
       sibling->right->color = 'B'; //change the sibling's right node's color to be black
@@ -605,9 +633,12 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
       sibling->right->parent = sibling; //set the sibling's right node's parent to be the sibling
       parent->left->left = sibling; //set the new left node of the parent's left node to be the sibling
       sibling->parent = parent->left; //set the parent of the sibling to now be the new left node of the parent
+
+      return;
     }
 
-    else if (parent->left == current && sibling != NULL && sibling->color == 'B' && (sibling->right->color == 'B' || sibling->right == NULL) && sibling->left != NULL && sibling->left->color == 'R'){
+    else if (parent->left == current && sibling != NULL && sibling->color == 'B' && (sibling->right == NULL ||sibling->right->color == 'B') && sibling->left != NULL && sibling->left->color == 'R'){
+      cout << "Case 5" << endl;
       //case 5
       //if the node is to the right of the parent and the sibling is black, the sibling's right is black, and the sibling's left is red, recolor and reset pointers
       sibling->left->color = 'B'; //change the sibling's right node's color to be black
@@ -618,9 +649,14 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
       sibling->left->parent = sibling; //set the sibling's left node's parent to be the sibling
       parent->right->right = sibling; //set the new right node of the parent's right node to be the sibling
       sibling->parent = parent->right; //set the parent of the sibling to now be the new right node of the parent
+
+      return;
     }
 
-    if (current == parent->right && sibling != NULL && sibling->color == 'B' && sibling->left->color == 'R') {
+    cout << "About to check case 6" << endl;
+    
+    if (current == parent->right && sibling != NULL && sibling->color == 'B' && sibling->left != NULL && sibling->left->color == 'R') {
+      cout << "Case 6" << endl;
       //case 6
       //if the current node is the right of the parent and the sibling exists and is black, and the sibling has a left node with a red color, then recolor and rotate
       
@@ -635,10 +671,20 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
       if (grandparent != NULL) {
 	//if the parent is not the root, then set sibling's parent to be the grandparent
 	sibling->parent = grandparent;
-      }      
+	if (grandparent->right == parent) {
+	  grandparent->right = sibling;
+	}
+
+	else if (grandparent->left == parent) {
+	  grandparent->left = sibling;
+	}
+      }
+
+      return;
     }
 
-    if (current == parent->left && sibling != NULL && sibling->color == 'B' && sibling->right->color == 'R') {
+    else if (current == parent->left && sibling != NULL && sibling->color == 'B' && sibling->right != NULL && sibling->right->color == 'R') {
+      cout << "Case 6" << endl;
       //case 6
       //if the current node is the left of the parent and the sibling exists and is black, and the sibling has a right node with a red color, then recolor and rotate
       
@@ -653,7 +699,16 @@ void deletionBalance(node * current, node * parent, node * grandparent, node * &
       if (grandparent != NULL) {
 	//if the parent is not the root, then set sibling's parent to be the grandparent
 	sibling->parent = grandparent;
-      } 
+	if (grandparent->right == parent) {
+	  grandparent->right = sibling;
+	}
+
+	else if (grandparent->left == parent) {
+	  grandparent->left = sibling;
+	}
+      }
+
+      return;
     }
   }
 }
