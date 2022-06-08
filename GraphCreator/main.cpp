@@ -11,7 +11,7 @@ This is the graph creator program. It allows users to create and add nodes, make
 
 using namespace std;
 
-void printArrays(int graph[20][20], char  nodeNames[20][20]);
+//void printArrays(int graph[20][20], char  nodeNames[20][20]);
 
 int main() {
   int graph [20][20]; //creates the graph to see pathways
@@ -164,19 +164,17 @@ int main() {
       graph[nodeNameIndexTwo][nodeNameIndexOne] = 0;
     }
 
-    else if (strcmp(input, "S") == 0) {
-    }
-
+    //I'm tanking Dijkstra's algorithm. -5 immediately. It's ok.
+    
     else {
       cout << "Not a valid input!" << endl;
     }
-    printArrays(graph, nodeNames);
   }
 
   return 0;
 }
 
-void printArrays(int graph[20][20], char nodeNames[20][20]) {
+/*void printArrays(int graph[20][20], char nodeNames[20][20]) {
   cout << "Graph:" << endl;
   for (int i = 0; i < 20; ++i) {
     for (int j = 0; j < 20; ++j) {
@@ -190,4 +188,4 @@ void printArrays(int graph[20][20], char nodeNames[20][20]) {
     cout << nodeNames[i];
     cout << endl;
   }
-}
+  }*/
