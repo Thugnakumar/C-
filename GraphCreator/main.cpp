@@ -6,15 +6,19 @@ This is the graph creator program. It allows users to create and add nodes, make
 
 //all the libraries
 #include <iostream>
-#include <ccstring>
+#include <cstring>
 #include <cctype>
 
 using namespace std;
 
+void printArrays(int graph[20][20], char  nodeNames[20][20]);
+
 int main() {
   int graph [20][20]; //creates the graph to see pathways
-  char input; //character for input on what action the user wants to complete
-  char input2; //character for reading input on what the user wants to do in the graph after choosing their action
+  char input[2]; //character for input on what action the user wants to complete
+  char nodeNames[20][20]; //character array for storing the node names
+  char inputs[20]; //character array for reading in user inputs after commands
+  int vertexCounter = 0; //integer for counting the number of vertices that the user has inputted
 
   for (int i = 0; i < 20; ++i) {
     for (int j= 0; j < 20; ++j) {
@@ -22,87 +26,95 @@ int main() {
       graph[i][j] = -1;
     }
   }
-  
+
+  for (int i = 0; i < 20; ++i) {
+    nodeNames[i][0] = '\0';
+  }
+
   while (true) {
-    cout << "What would you like to do? Would you like to add (A) a new node, remove (R) a node, add a pathway (P) between two nodes, or find the shortest (S) path between two nodes?" << endl;
+    cout << "What would you like to do? Would you like to add a new vertex (AV), remove a vertex (RV), add an edge between two vertices (AE), remove an edge between two verticies (RE), or find the shortest (S) path between two nodes?" << endl;
     cin >> input;
 
-    input = toupper(input);
-
-    if (strcmp(input, 'A') == 0) {
-      //if the user wants to add a new node...
-      cout << "Enter the name of the node that you would like to add (use a single lowercase letter between 'a' and 't')" << endl; //ask the user what node they want to input (must be between a and t)
-      cin >> input2; //take in the input
-      while (!(input2 >= 'a' && input2 <= 't')) {
-	//if the user's input doesn't meet the input requirements, ask them to input again and again until it's valid
-	cout << "Not a valid input! Try again!" << endl;
-	cin >> input2;
-      }
-      
-      int node = input2 - 97; //store the input as a number which equates to its row/column in the array
-
-      for (int i = 0; i < 20; ++i) {
-	//go through the row and column for that node and set those array slots equal to 0 to show that the node exists
-	graph[node][i] = 0;
-	graph[i][node] = 0;
-      }
+    for (int i = 0; i < 2; ++i) {
+      input[i] = toupper(input[i]);
     }
 
-    else if (strcmp(input, 'R') == 0) {
-      //if the user wants to remove a node...
-      cout << "What node would you like to remove (use a single lowercase letter between 'a' and 't')?"; //ask what node the user wants to remove
-      cin >> input2; //take in the input
+    if (strcmp(input, "AV") == 0) {
+      //if the user wants to add a new node...
+      cout << "Enter the name of the node that you would like to add" << endl; //ask the user what node they want to input
+      cin >> inputs; //take in the input
 
-      while (!(input2 >= 'a' && input2 <= 't')) {
-	//if the user's input doesn't meet the input requirements, ask them to input again and again until it's valid
-	cout << "Not a valid input! Try again!" << endl;
-	cin >> input2;
+      strcpy(nodeNames[vertexCounter], inputs);
+      
+      for (int i = 0; i < 20; ++i) {
+	//go through the row and column for that node and set those array slots equal to 0 to show that the node exists
+	graph[vertexCounter][i] = 0;
+	graph[i][vertexCounter] = 0;
       }
 
-      int node = input2 - 97; //set user's input to be the number that corresponds with that letter's location on the graph
+      vertexCounter++;
+      printArrays(graph, nodeNames);
+    }
 
-      if (graph[node][0] > -1) {
+    else if (strcmp(input, "RV") == 0) {
+      //if the user wants to remove a node...
+      cout << "What node would you like to remove?"; //ask what node the user wants to remove
+      cin >> inputs; //take in the input
+      int nodeNameIndex = 0;
+
+      for (int i = 0; i < 20; ++i) {
+	if (strcmp(nodeNames[i], inputs) == 0) {
+	  nodeNameIndex = i;
+	  break;
+	}
+      }
+      
+      if (graph[nodeNameIndex][0] > -1) {
 	//if the node actually exists...
 	for (int i = 0; i < 20; ++i) {
 	  //remove all pathways from that node and, in essence, make it so that the node doesn't exist anymore
-	  graph[node][i] = -1;
-	  graph[i][node] = -1;
+	  graph[nodeNameIndex][i] = -1;
+	  graph[i][nodeNameIndex] = -1;
 	}
       }
 
       else {
 	cout << "That node doesn't exist!" << endl;
       }
+
+      printArrays(graph, nodeNames);
       
     }
 
-    else if (strcmp(input, 'P') == 0) {
+    else if (strcmp(input, "AE") == 0) {
       cout << "You need two nodes to make a pathway" << endl;
-      cout << "What is the first node (use a single lowercase letter between 'a' and 't')?" << endl;
-      cin >> input2;
+      cout << "What is the first node?" << endl;
+      cin >> inputs;
 
-      while (!(input2 >= 'a' && input2 <= 't')) {
-	//if the user's input doesn't meet the input requirements, ask them to input again and again until it's valid
-	cout << "Not a valid input! Try again!" << endl;
-	cin >> input2;
+      int nodeNameIndexOne = 0;
+
+      for (int i = 0; i < 20; ++i) {
+	if (strcmp(nodeNames[i], inputs) == 0) {
+	  nodeNameIndexOne = i;
+	  break;
+	}
       }
-
-      int nodeOne = input2 - 97;
       
-      cout << "What is the second node (use a single lowercase letter between 'a' and 't')?" << endl;
-      cin >> input2;
+      cout << "What is the second node?" << endl;
+      cin >> inputs;
 
-      while (!(input2 >= 'a' && input2 <= 't')) {
-	//if the user's input doesn't meet the input requirements, ask them to input again and again until it's valid
-	cout << "Not a valid input! Try again!" << endl;
-	cin >> input2;
+      int nodeNameIndexTwo = 0;
+
+      for (int i = 0; i < 20; ++i) {
+	if (strcmp(nodeNames[i], inputs) == 0) {
+	  nodeNameIndexTwo = i;
+	  break;
+	}
       }
 
-      int nodeTwo = input2 - 97;
-
-      if (nodeOne == nodeTwo) {
-	graph[nodeOne][nodeTwo] = 0;
-	graph [nodeTwo][nodeOne] = 0;
+      if (nodeNameIndexOne == nodeNameIndexTwo) {
+	graph[nodeNameIndexOne][nodeNameIndexTwo] = 0;
+	graph [nodeNameIndexTwo][nodeNameIndexOne] = 0;
       }
 
       else {
@@ -110,24 +122,72 @@ int main() {
 	cout << "What is the length of this pathway?" << endl;
 	cin >> pathLength;
 
-	if (pathLength >= 0) {
-	  graph[nodeOne][nodeTwo] = pathLength;
-	  graph[nodeTwo][nodeOne] = pathLength;
+	if (pathLength > 0) {
+	  graph[nodeNameIndexOne][nodeNameIndexTwo] = pathLength;
+	  graph[nodeNameIndexTwo][nodeNameIndexOne] = pathLength;
 	}
 
 	else {
-	  cout << "Can't have a negative path length!" << endl;
+	  cout << "You must have a positive path length!" << endl;
+	}
+      }
+      printArrays(graph, nodeNames);
+    }
+
+    else if (strcmp(input, "RE") == 0) {
+      cout << "Enter the 2 nodes that the pathway you would like to delete lies between" << endl;
+      cout << "Node 1: ";
+      cin >> inputs;
+
+      int nodeNameIndexOne = 0;
+
+      for (int i = 0; i < 20; ++i) {
+	if (strcmp(nodeNames[i], inputs) == 0) {
+	  nodeNameIndexOne = i;
+	  break;
 	}
       }
 
+      cout << "Node 2: ";
+      cin >> inputs;
+
+      int nodeNameIndexTwo = 0;
+
+      for (int i = 0; i < 20; ++i) {
+	if (strcmp(nodeNames[i], inputs) == 0) {
+	  nodeNameIndexTwo = i;
+	  break;
+	}
+      }
+
+      graph[nodeNameIndexOne][nodeNameIndexTwo] = 0;
+      graph[nodeNameIndexTwo][nodeNameIndexOne] = 0;
     }
 
-    else if (strcmp(input, 'S') == 0) {
+    else if (strcmp(input, "S") == 0) {
     }
 
     else {
       cout << "Not a valid input!" << endl;
     }
+    printArrays(graph, nodeNames);
   }
-  cout << "What would you like 
+
+  return 0;
+}
+
+void printArrays(int graph[20][20], char nodeNames[20][20]) {
+  cout << "Graph:" << endl;
+  for (int i = 0; i < 20; ++i) {
+    for (int j = 0; j < 20; ++j) {
+      cout << graph[i][j];
+    }
+    cout << endl;
+  }
+
+  cout << "Names: " << endl;
+  for (int i = 0; i < 20; ++i) {
+    cout << nodeNames[i];
+    cout << endl;
+  }
 }
